@@ -24,6 +24,19 @@
 
 namespace hotstuff {
 
+/**!
+ * Proposer with fixed leader rotation
+ * that waits for a qc on the last proposed block
+ * (not commitment)
+ * before proposing the next.
+ * Waiting is not _strictly_ required,
+ * just facilitated via the wait_for_qc() method.
+ * Does not implement leader rotation by
+ * default, but will defer to new leader
+ * by default if another replica proposes a block.
+ * 
+ * Timeouts, leader failure detection not implemented.
+ */
 class PaceMakerWaitQC {
 
     HotstuffAppBase& hotstuff_app;

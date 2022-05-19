@@ -48,18 +48,22 @@ protected:
 
 	void on_new_qc(Hash const& hash) override final;
 
-	//returns highest decision height
+	//! returns highest decision height
 	uint64_t reload_decided_blocks();
-
-
 
 public:
 
 	HotstuffAppBase(const ReplicaConfig& config_, ReplicaID self_id, SecretKey sk);
 
+	//! Propose new block.
+	//! Block hash returned (for input to wait_for_new_qc)
 	Hash do_propose();
+	//! Propose an empty block.
 	Hash do_empty_propose();
 
+	//! wait for new quorum cert.
+	//! return true is the new QC is on the
+	//! expected input hash.
 	bool wait_for_new_qc(Hash const& expected_next_qc);
 	void cancel_wait_for_new_qc();
 
