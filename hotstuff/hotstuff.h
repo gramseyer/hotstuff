@@ -40,6 +40,8 @@ class HotstuffAppBase : public HotstuffCore {
 
 	block_ptr_t find_block_by_hash(Hash const& hash) override final;
 
+	void do_vote(block_ptr_t block, ReplicaID proposer) override final;
+
 protected:
 	
 	virtual xdr::opaque_vec<> get_next_vm_block(bool nonempty_proposal, uint64_t hotstuff_height) = 0;
@@ -49,11 +51,12 @@ protected:
 	//returns highest decision height
 	uint64_t reload_decided_blocks();
 
+
+
 public:
 
 	HotstuffAppBase(const ReplicaConfig& config_, ReplicaID self_id, SecretKey sk);
 
-	void do_vote(block_ptr_t block, ReplicaID proposer) override final;
 	Hash do_propose();
 	Hash do_empty_propose();
 
