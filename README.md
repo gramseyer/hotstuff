@@ -31,6 +31,10 @@ speculation much simpler (Hotstuff manages all of this).  One could implement a 
 function on the state machine, which could just forward those input commands to Hotstuff's
 buffer on demand.
 
+The design is planned around deployment on a machine with many CPU cores and large but infrequent consensus blocks
+(i.e. in the context of SPEEDEX).  Hence the choice of dedicated threads managing event queues (which is very simple to set up)
+over an asynchronous callback system.
+
 Contributions of any kind are very welcome.
 
 # Usage
