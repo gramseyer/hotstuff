@@ -80,7 +80,7 @@ $(XH_FILES) : $(XDRC)
 SUFFIXES = .x .h
 
 .x.h:
-	$(XDRC)  -hh --hhpy -o $@ $<
+	$(XDRC)  -hh -o $@ $<
 
 clean-local:
 	$(RM) $(XH_FILES)
