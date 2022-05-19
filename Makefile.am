@@ -5,8 +5,8 @@ SUBDIRS = $(PKGCONFIG_SUBDIRS)
 CLEANFILES = *~ .*~
 
 X_FILES = \
-	xdr/types.x \
-	xdr/hotstuff.x
+	hotstuff/xdr/types.x \
+	hotstuff/xdr/hotstuff.x
 
 XH_FILES = $(X_FILES:.x=.h)
 
@@ -21,6 +21,7 @@ HOTSTUFF_SRCS = \
 	hotstuff/block_storage/block_store.cc \
 	hotstuff/block_storage/garbage_collector.cc \
 	hotstuff/consensus.cc \
+	hotstuff/crypto/crypto_utils.cc \
 	hotstuff/crypto.cc \
 	hotstuff/event.cc \
 	hotstuff/event_queue.cc \

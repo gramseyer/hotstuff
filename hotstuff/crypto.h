@@ -56,7 +56,8 @@ public:
     // for verifying qc from another node
     bool verify(const speedex::ReplicaConfig &config) const;
 
-    const speedex::Hash &get_obj_hash() const {
+    const speedex::Hash& 
+    get_obj_hash() const {
         return obj_hash;
     }
 
