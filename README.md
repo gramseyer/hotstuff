@@ -39,6 +39,23 @@ Contributions of any kind are very welcome.
 
 `make test` for tests
 
+## API Usage
+
+ReplicaConfig manages a map of which replicas are located at which addresses.  Dynamic reconfiguration not supported.
+
+HotstuffApp takes configuration data and a pointer to a state machine instance for replication.
+Use by calling `do_propose` on the app.
+
+Note: `do_propose` will only propose empty blocks (i.e. without consulting the state machine)
+until the leader is stable -- that is, the leader proposes empty blocks until one of the empty
+blocks commits.  The rationale here is that this makes management of speculatively executing 
+state machines much easier (in particular, this minimizes the number of times that these state machines
+have to rollback).  A continuously rotating leader could be implemented naively by sequences of 4 calls to
+`do_propose`, although if such behavior is desired, more direct interaction with the speculation on the state machine is likely
+desirable.
+
+`hotstuff/vm/tests/test_counting_vm.cc` gives a simple usage example with one replica.
+
 # Integration
 
 The hotstuff implementation handles internally its own passing of protocol messages
@@ -51,6 +68,8 @@ Hotstuff maintains a log of all blocks, and a cache mapping block height -> bloc
 for crash recovery).  Upon recovery, the state machine gets access to that LMDB instance
 and knowledge of which blocks committed, so it can access all the information it needs
 to recover.  
+
+Recovery after disk loss not implemented.
 
 # TODO
 
