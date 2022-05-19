@@ -1,7 +1,7 @@
 #pragma once
 
-#include "xdr/types.h"
-#include "xdr/hotstuff.h"
+#include "hotstuff/xdr/types.h"
+#include "hotstuff/xdr/hotstuff.h"
 
 #include "hotstuff/block.h"
 #include "hotstuff/block_storage/garbage_collector.h"
@@ -18,8 +18,6 @@ class BlockStore {
 	struct BlockContext {
 		block_ptr_t block;
 	};
-
-	using Hash = speedex::Hash;
 
 	std::map<Hash, BlockContext> block_cache;
 
@@ -42,8 +40,8 @@ public:
 	void write_to_disk(const Hash& block_hash);
 
 	struct MissingDependencies {
-		std::optional<speedex::Hash> parent_hash;
-		std::optional<speedex::Hash> justify_hash;
+		std::optional<Hash> parent_hash;
+		std::optional<Hash> justify_hash;
 
 		operator bool() {
 			return ((bool) parent_hash) || ((bool) justify_hash);

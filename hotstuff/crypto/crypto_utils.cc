@@ -1,4 +1,4 @@
-#include "crypto/crypto_utils.h"
+#include "hotstuff/crypto/crypto_utils.h"
 
 #include <sodium.h>
 #include <cstdio>

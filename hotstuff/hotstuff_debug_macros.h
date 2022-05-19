@@ -1,11 +1,18 @@
 #pragma once
 
+#define DEBUG_LEVEL_NONE 100
+#define DEBUG_LEVEL_ERROR 15
+#define DEBUG_LEVEL_WARN 12
+#define DEBUG_LEVEL_INFO 10
+#define DEBUG_LEVEL_TRACE 5
+
 #define HSLOG(component, s, ...) std::printf((std::string("%-45s") + component + s + "\n").c_str(), (std::string(__FILE__) + "." + std::to_string(__LINE__) + ":").c_str() __VA_OPT__(,) __VA_ARGS__)
 
 #define VM_BRIDGE_LEVEL DEBUG_LEVEL_INFO
 #define EVENT_LEVEL DEBUG_LEVEL_INFO
 #define NETWORK_EVENT_LEVEL DEBUG_LEVEL_INFO
 #define HSC_LEVEL DEBUG_LEVEL_INFO
+#define HOTSTUFF_INFO_LEVEL DEBUG_LEVEL_INFO
 
 #if VM_BRIDGE_LEVEL <= DEBUG_LEVEL_INFO
 #define VM_BRIDGE_INFO(s, ...) HSLOG("VM BRIDGE: ", s, __VA_ARGS__)
@@ -38,4 +45,12 @@
 #else
 #define HSC_INFO(s, ...) (void)0
 #define HSC_INFO_F(s) (void)0
+#endif
+
+#if HOTSTUFF_INFO_LEVEL <= DEBUG_LEVEL_INFO
+#define HOTSTUFF_INFO(s, ...) HSLOG("HS INFO: ", s, __VA_ARGS__)
+#define HOTSTUFF_INFO_F(s) s
+#else
+#define HOTSTUFF_INFO(s, ...) (void)0
+#define HOTSTUFF_INFO_F(s) (void)0
 #endif

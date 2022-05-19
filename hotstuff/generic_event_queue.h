@@ -7,9 +7,9 @@
 namespace hotstuff {
 
 template<typename EventT>
-class GenericEventQueue : public speedex::AsyncWorker {
-	using speedex::AsyncWorker::mtx;
-	using speedex::AsyncWorker::cv;
+class GenericEventQueue : public utils::AsyncWorker {
+	using utils::AsyncWorker::mtx;
+	using utils::AsyncWorker::cv;
 
 	std::vector<EventT> events;
 
@@ -30,14 +30,14 @@ class GenericEventQueue : public speedex::AsyncWorker {
 protected:
 
 	GenericEventQueue()
-		: speedex::AsyncWorker()
+		: utils::AsyncWorker()
 		, events()
 		{
-			speedex::AsyncWorker::start_async_thread([this] () {run();});
+			utils::AsyncWorker::start_async_thread([this] () {run();});
 		}
 
 	~GenericEventQueue() {
-		speedex::AsyncWorker::wait_for_async_task();
+		utils::AsyncWorker::wait_for_async_task();
 		end_async_thread();
 	}
 

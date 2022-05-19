@@ -17,19 +17,11 @@
  * limitations under the License.
  */
 
-#include "hotstuff/crypto.h"
+#include "hotstuff/crypto/certs.h"
 
 #include "utils/bitvector.h"
 
 namespace hotstuff {
-
-using speedex::Hash;
-using speedex::SecretKey;
-using speedex::PublicKey;
-using speedex::Signature;
-using speedex::ReplicaConfig;
-using speedex::ReplicaInfo;
-using speedex::ReplicaID;
 
 using xdr::operator==;
 
@@ -71,7 +63,7 @@ QuorumCertificate::QuorumCertificate(QuorumCertificateWire const& qc_wire)
     : obj_hash(qc_wire.justify)
     , sigs()
 {
-    speedex::BitVector<ReplicaID> bv(qc_wire.bmp);
+    utils::BitVector<ReplicaID> bv(qc_wire.bmp);
 
     if (bv.size() != qc_wire.sigs.size()) {
         return;
@@ -86,7 +78,7 @@ QuorumCertificate::QuorumCertificate(QuorumCertificateWire const& qc_wire)
 
 QuorumCertificateWire 
 QuorumCertificate::serialize() const {
-    speedex::BitVector<ReplicaID> bv;
+    utils::BitVector<ReplicaID> bv;
 
     QuorumCertificateWire out;
     out.justify = obj_hash;
@@ -100,6 +92,8 @@ QuorumCertificate::serialize() const {
         bv.add(rid);
     }
 
+    // careful - assumes machines all have same
+    // endianness
     out.bmp = bv.get();
 
     return out;
@@ -110,7 +104,7 @@ QuorumCertificate::add_partial_certificate(ReplicaID rid, const PartialCertifica
     if (pc.hash != obj_hash) {
         throw std::invalid_argument("partial certificate merged into different quorum certificate");
     }
-    if (rid >= speedex::MAX_REPLICAS) {
+    if (rid >= MAX_REPLICAS) {
         throw std::invalid_argument("invalid replica id");
     }
     sigs.emplace(rid, pc.sig);
@@ -118,7 +112,7 @@ QuorumCertificate::add_partial_certificate(ReplicaID rid, const PartialCertifica
 
 bool QuorumCertificate::verify(const ReplicaConfig &config) const {
     //check for genesis block
-    if (obj_hash == speedex::Hash()) {
+    if (obj_hash == Hash()) {
         return true;
     }
 

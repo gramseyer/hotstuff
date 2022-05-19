@@ -4,18 +4,12 @@
 
 #include "hotstuff/network_event_queue.h"
 
-#include "utils/debug_macros.h"
+#include "hotstuff/hotstuff_debug_macros.h"
 #include "utils/debug_utils.h"
-
 
 namespace hotstuff {
 
-using speedex::ReplicaID;
-using speedex::ReplicaConfig;
-using speedex::ReplicaInfo;
-using speedex::Hash;
-
-RequestContext::RequestContext(speedex::Hash const& request)
+RequestContext::RequestContext(Hash const& request)
 	: request(request)
 	, block_is_received(false)
 	, dependent_network_events()
@@ -77,7 +71,7 @@ BlockFetchManager::add_replica(ReplicaInfo const& info, NetworkEventQueue& net_q
 
 
 void
-BlockFetchManager::add_fetch_request(speedex::Hash const& requested_block, ReplicaID request_target, std::vector<NetEvent> const& dependent_events)
+BlockFetchManager::add_fetch_request(Hash const& requested_block, ReplicaID request_target, std::vector<NetEvent> const& dependent_events)
 {
 	if (!config.is_valid_replica(request_target)) {
 		return;

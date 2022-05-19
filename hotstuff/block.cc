@@ -1,14 +1,9 @@
 #include "hotstuff/block.h"
 #include "hotstuff/block_storage/io_utils.h"
 
-
-#include "utils/hash.h"
+#include "hotstuff/crypto/hash.h"
 
 namespace hotstuff {
-
-using speedex::Hash;
-using speedex::ReplicaID;
-using speedex::ReplicaConfig;
 
 HotstuffBlock::HotstuffBlock(HotstuffBlockWire&& _wire_block, ReplicaID proposer)
 	: wire_block(std::move(_wire_block))
@@ -16,7 +11,7 @@ HotstuffBlock::HotstuffBlock(HotstuffBlockWire&& _wire_block, ReplicaID proposer
 	, proposer(proposer)
 	, block_height(0)
 	, parent_block_ptr(nullptr)
-	, self_qc(speedex::hash_xdr(wire_block.header))
+	, self_qc(hash_xdr(wire_block.header))
 	, decided(false)
 	, written_to_disk()
 	, hash_checked(false)
@@ -27,10 +22,10 @@ HotstuffBlock::HotstuffBlock(HotstuffBlockWire&& _wire_block, ReplicaID proposer
 HotstuffBlock::HotstuffBlock(HotstuffBlockWire&& _wire_block, load_from_disk_block_t _)
 	: wire_block(std::move(_wire_block))
 	, parsed_qc(wire_block.header.qc)
-	, proposer(speedex::UNKNOWN_REPLICA)
+	, proposer(UNKNOWN_REPLICA)
 	, block_height(0)
 	, parent_block_ptr(nullptr)
-	, self_qc(speedex::hash_xdr(wire_block.header))
+	, self_qc(hash_xdr(wire_block.header))
 	, decided(true)
 	, written_to_disk()
 	, hash_checked(true)
@@ -45,10 +40,10 @@ HotstuffBlock::HotstuffBlock(HotstuffBlockWire&& _wire_block, load_from_disk_blo
 HotstuffBlock::HotstuffBlock(genesis_block_t)
 	: wire_block()
 	, parsed_qc(std::nullopt)
-	, proposer(speedex::UNKNOWN_REPLICA)
+	, proposer(UNKNOWN_REPLICA)
 	, block_height(0)
 	, parent_block_ptr(nullptr)
-	, self_qc(speedex::Hash())
+	, self_qc(Hash())
 	, decided(true)
 	, written_to_disk()
 	, hash_checked(true)
@@ -92,7 +87,7 @@ HotstuffBlock::supports_nonempty_child_proposal(const ReplicaID self_id, int dep
 bool
 HotstuffBlock::validate_hash() const {
 	if (hash_checked) return hash_valid;
-	auto hash = speedex::hash_xdr(wire_block.body);
+	auto hash = hash_xdr(wire_block.body);
 	hash_checked = true;
 	if (hash != wire_block.header.body_hash) {
 		HOTSTUFF_INFO("mismatch between hash(wire_block.body) and wire_block.body_hash");
@@ -155,7 +150,7 @@ HotstuffBlock::mint_block(xdr::opaque_vec<>&& body, QuorumCertificateWire const&
 	HotstuffBlockWire wire_block;
 	wire_block.header.parent_hash = parent_hash;
 	wire_block.header.qc = qc_wire;
-	wire_block.header.body_hash = speedex::hash_xdr(body);
+	wire_block.header.body_hash = hash_xdr(body);
 	wire_block.body = std::move(body);
 
 	return std::shared_ptr<HotstuffBlock>(new HotstuffBlock(std::move(wire_block), self_id));

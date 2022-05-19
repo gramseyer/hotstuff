@@ -6,10 +6,6 @@
 
 namespace hotstuff {
 
-using speedex::ReplicaID;
-using speedex::ReplicaInfo;
-using speedex::ReplicaConfig;
-
 VoteEvent::VoteEvent(PartialCertificate const& _cert, block_ptr_t blk, ReplicaID rid)
 	: rid(rid)
 	, cert(_cert)

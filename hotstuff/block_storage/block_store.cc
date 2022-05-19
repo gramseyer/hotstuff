@@ -2,7 +2,8 @@
 
 #include "hotstuff/block_storage/io_utils.h"
 
-#include "utils/debug_macros.h"
+#include "hotstuff/hotstuff_debug_macros.h"
+
 #include "utils/debug_utils.h"
 
 namespace hotstuff {

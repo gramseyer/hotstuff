@@ -21,7 +21,7 @@
 #pragma once
 
 #include "hotstuff/block.h"
-#include "hotstuff/crypto.h"
+#include "hotstuff/crypto/certs.h"
 #include "hotstuff/lmdb.h"
 
 #include <mutex>
@@ -41,8 +41,8 @@ private:
 
 protected:
     /* === auxilliary variables === */
-    speedex::ReplicaID self_id;           					/**< replica id of self in ReplicaConfig */
-    speedex::ReplicaConfig config;	                 		/**< replica configuration */
+    ReplicaID self_id;           							/**< replica id of self in ReplicaConfig */
+    ReplicaConfig config;	                 				/**< replica configuration */
     block_ptr_t b_leaf;										/**< highest tail block.  Build on this block */
 
 	mutable std::mutex proposal_mutex; 						/**< lock access to b_leaf and hqc */
@@ -55,7 +55,7 @@ protected:
 
 	// only for initialization from lmdb
 	void reload_state_from_index();
-	virtual block_ptr_t find_block_by_hash(speedex::Hash const& hash) = 0;
+	virtual block_ptr_t find_block_by_hash(Hash const& hash) = 0;
 
 private:
 	//qc_block is the block pointed to by qc
@@ -65,9 +65,9 @@ private:
 
 public:
 
-	HotstuffCore(const speedex::ReplicaConfig& config, speedex::ReplicaID self_id);
+	HotstuffCore(const ReplicaConfig& config, ReplicaID self_id);
 
-	const speedex::ReplicaConfig& get_config() {
+	const ReplicaConfig& get_config() {
 		return config;
 	}
 
@@ -75,18 +75,18 @@ public:
 	on_receive_vote(
 		const PartialCertificate& partial_cert, 
 		block_ptr_t certified_block, 
-		speedex::ReplicaID voterid);
+		ReplicaID voterid);
 
 	void 
-	on_receive_proposal(block_ptr_t bnew, speedex::ReplicaID proposer);
+	on_receive_proposal(block_ptr_t bnew, ReplicaID proposer);
 
-	speedex::ReplicaID 
+	ReplicaID 
 	get_last_proposer() const {
 		std::lock_guard lock(proposal_mutex);
 		return hqc.first -> get_proposer();
 	}
 
-	speedex::ReplicaID 
+	ReplicaID 
 	get_self_id() const {
 		return self_id;
 	}
@@ -94,10 +94,10 @@ public:
 protected:
 
 	// should send vote to block proposer
-	virtual void do_vote(block_ptr_t block, speedex::ReplicaID proposer) = 0;
+	virtual void do_vote(block_ptr_t block, ReplicaID proposer) = 0;
 
 	// called on getting a new qc.  Input is hash of qc'd obj.
-	virtual void on_new_qc(speedex::Hash const& hash) = 0;
+	virtual void on_new_qc(Hash const& hash) = 0;
 
 	virtual void apply_block(block_ptr_t block, HotstuffLMDB::txn& tx) = 0;
 

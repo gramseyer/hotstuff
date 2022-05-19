@@ -4,16 +4,10 @@
 #include "hotstuff/network_event.h"
 #include "hotstuff/network_event_queue.h"
 
-#include "utils/debug_macros.h"
-
 #include <chrono>
 #include <thread>
 
 namespace hotstuff {
-
-using speedex::ReplicaInfo;
-using speedex::ReplicaID;
-using speedex::Hash;
 
 BlockFetchWorker::BlockFetchWorker(const ReplicaInfo& info, NetworkEventQueue& network_event_queue)
 	: NonblockingRpcClient<client_t>(info)

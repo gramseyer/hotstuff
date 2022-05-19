@@ -1,8 +1,7 @@
 #include "hotstuff/block_storage/block_fetch_server.h"
 
 #include "hotstuff/block_storage/block_store.h"
-
-#include "rpc/rpcconfig.h"
+#include "hotstuff/config/replica_config.h"
 
 namespace hotstuff {
 
@@ -23,10 +22,10 @@ BlockFetchHandler::fetch(std::unique_ptr<BlockFetchRequest> req)
 	return response;
 }
 
-BlockFetchServer::BlockFetchServer(BlockStore& block_store)
+BlockFetchServer::BlockFetchServer(BlockStore& block_store, ReplicaInfo const& self_info)
 	: handler(block_store)
 	, ps()
-	, fetch_listener(ps, xdr::tcp_listen(HOTSTUFF_BLOCK_FETCH_PORT, AF_INET), false, xdr::session_allocator<void>())
+	, fetch_listener(ps, xdr::tcp_listen(self_info.get_service_name(ReplicaService::BLOCK_FETCH_SERVICE), AF_INET), false, xdr::session_allocator<void>())
 	{
 		fetch_listener.register_service(handler);
 

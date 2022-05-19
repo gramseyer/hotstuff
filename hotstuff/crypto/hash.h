@@ -1,13 +1,13 @@
 #pragma once
 
-#include "xdr/types.h"
+#include "hotstuff/xdr/types.h"
 
 #include <stdexcept>
 
 #include <sodium.h>
 #include <xdrpp/marshal.h>
 
-namespace scs
+namespace hotstuff
 {
 
 //! Hash an xdr (serializable) type.
@@ -27,4 +27,4 @@ Hash hash_xdr(const xdr_type& value) {
 	return hash_buf;
 }
 
-} /* scs */
+} /* hotstuff */

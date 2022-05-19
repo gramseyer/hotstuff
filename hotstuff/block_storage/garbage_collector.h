@@ -8,9 +8,9 @@
 
 namespace hotstuff {
 
-class BlockGarbageCollector : public speedex::AsyncWorker {
-	using speedex::AsyncWorker::cv;
-	using speedex::AsyncWorker::mtx;
+class BlockGarbageCollector : public utils::AsyncWorker {
+	using utils::AsyncWorker::cv;
+	using utils::AsyncWorker::mtx;
 
 	std::optional<uint64_t> hotstuff_height_to_gc;
 
@@ -32,8 +32,6 @@ public:
 
 	void invoke_gc(uint64_t hotstuff_height);
 	void add_block(block_ptr_t blk);
-
-
 };
 
 

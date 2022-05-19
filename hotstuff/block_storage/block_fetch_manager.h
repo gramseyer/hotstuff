@@ -1,13 +1,13 @@
 #pragma once
 
-#include "config/replica_config.h"
+#include "hotstuff/config/replica_config.h"
 
 #include "hotstuff/block.h"
 #include "hotstuff/network_event.h"
 
 #include "hotstuff/block_storage/block_fetch_worker.h"
 
-#include "xdr/hotstuff.h"
+#include "hotstuff/xdr/hotstuff.h"
 
 #include <atomic>
 #include <map>
@@ -23,7 +23,7 @@ class BlockStore;
 // Worker threads can crawl this to read hash and see whether req was satisfied;
 // two threads should not modify/read the network event list or requested_from concurrently.
 class RequestContext {
-	speedex::Hash request;
+	Hash request;
 	std::atomic<bool> block_is_received;
 	std::vector<NetEvent> dependent_network_events;
 
@@ -31,7 +31,7 @@ class RequestContext {
 
 public:
 
-	RequestContext(speedex::Hash const& request);
+	RequestContext(Hash const& request);
 
 	void add_network_events(std::vector<NetEvent> events);
 
@@ -43,11 +43,11 @@ public:
 		return dependent_network_events;
 	}
 
-	speedex::Hash const& get_requested_hash() const {
+	Hash const& get_requested_hash() const {
 		return request;
 	}
 
-	bool was_requested_from(speedex::ReplicaID rid) const {
+	bool was_requested_from(ReplicaID rid) const {
 		return (requested_from >> rid) & 1;
 	}
 };
@@ -61,7 +61,7 @@ class ReplicaFetchQueue {
 	// CAS on an iterator (ptr to iterator) could eliminate this mtx.
 	std::mutex mtx;
 
-	const speedex::ReplicaInfo info;
+	const ReplicaInfo info;
 
 	std::vector<request_ctx_ptr> outstanding_reqs;
 
@@ -73,7 +73,7 @@ class ReplicaFetchQueue {
 
 public:
 
-	ReplicaFetchQueue(const speedex::ReplicaInfo& info, NetworkEventQueue& net_queue)
+	ReplicaFetchQueue(const ReplicaInfo& info, NetworkEventQueue& net_queue)
 		: mtx()
 		, info(info)
 		, outstanding_reqs()
@@ -86,18 +86,18 @@ public:
 
 class BlockFetchManager {
 
-	std::unordered_map<speedex::ReplicaID, std::unique_ptr<ReplicaFetchQueue>> queues;
-	std::map<speedex::Hash, request_ctx_ptr> outstanding_reqs;
+	std::unordered_map<ReplicaID, std::unique_ptr<ReplicaFetchQueue>> queues;
+	std::map<Hash, request_ctx_ptr> outstanding_reqs;
 
 	BlockStore& block_store;
 
-	const speedex::ReplicaConfig& config;
+	const ReplicaConfig& config;
 
-	void add_replica(speedex::ReplicaInfo const& info, NetworkEventQueue& net_queue);
+	void add_replica(ReplicaInfo const& info, NetworkEventQueue& net_queue);
 
 public:
 
-	BlockFetchManager(BlockStore& block_store, const speedex::ReplicaConfig& config)
+	BlockFetchManager(BlockStore& block_store, const ReplicaConfig& config)
 		: queues()
 		, outstanding_reqs()
 		, block_store(block_store)
@@ -117,8 +117,8 @@ public:
 	// Not threadsafe.
 	void
 	add_fetch_request(
-		speedex::Hash const& requested_block, 
-		speedex::ReplicaID request_target, 
+		Hash const& requested_block, 
+		ReplicaID request_target, 
 		std::vector<NetEvent> const& dependent_events);
 
 	//returns network events to execute

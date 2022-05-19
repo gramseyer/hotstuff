@@ -14,11 +14,11 @@ namespace hotstuff {
 class HotstuffLMDB;
 
 template<typename VMType>
-class VMControlInterface : public speedex::AsyncWorker {
+class VMControlInterface : public utils::AsyncWorker {
 	std::shared_ptr<VMType> vm_instance;
 
-	using speedex::AsyncWorker::mtx;
-	using speedex::AsyncWorker::cv;
+	using utils::AsyncWorker::mtx;
+	using utils::AsyncWorker::cv;
 
 	using proposal_buffer_t = std::unique_ptr<typename VMType::block_type>;
 	using submission_t = std::unique_ptr<typename VMType::block_type>;
@@ -49,7 +49,7 @@ class VMControlInterface : public speedex::AsyncWorker {
 public:
 
 	VMControlInterface(std::shared_ptr<VMType> vm)
-		: speedex::AsyncWorker()
+		: utils::AsyncWorker()
 		, vm_instance(vm)
 		, blocks_to_validate()
 		, proposal_buffer()

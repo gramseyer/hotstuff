@@ -1,6 +1,6 @@
 #pragma once
 
-#include "xdr/hotstuff.h"
+#include "hotstuff/xdr/hotstuff.h"
 
 #include <memory>
 
@@ -10,6 +10,7 @@
 namespace hotstuff {
 
 class BlockStore;
+class ReplicaInfo;
 
 class BlockFetchHandler {
 
@@ -34,7 +35,7 @@ class BlockFetchServer {
 
 public:
 
-	BlockFetchServer(BlockStore& block_store);
+	BlockFetchServer(BlockStore& block_store, ReplicaInfo const& self_info);
 };
 
 

@@ -15,7 +15,7 @@ namespace hotstuff {
 
 class QuorumCertificate;
 
-class HotstuffLMDB : private speedex::LMDBInstance {
+class HotstuffLMDB : private lmdb::LMDBInstance {
 
 	constexpr static auto DB_NAME = "hotstuff";
 
@@ -24,7 +24,7 @@ class HotstuffLMDB : private speedex::LMDBInstance {
 			std::string(ROOT_DB_DIRECTORY) + std::string(HOTSTUFF_INDEX));
 	}
 
-	std::optional<std::pair<speedex::Hash, std::vector<uint8_t>>>
+	std::optional<std::pair<Hash, std::vector<uint8_t>>>
 	get_decided_hash_id_pair_(uint64_t height) const;
 
 public:
@@ -42,19 +42,19 @@ public:
 	HotstuffLMDB() : LMDBInstance() { open_env(); }
 
 	template<typename vm_block_id>
-	std::optional<std::pair<speedex::Hash, vm_block_id>>
+	std::optional<std::pair<Hash, vm_block_id>>
 	get_decided_hash_id_pair(uint64_t height) const;
 
 	class txn {
 		friend class HotstuffLMDB;
 
-		speedex::dbenv::wtxn tx;
+		lmdb::dbenv::wtxn tx;
 		MDB_dbi data_dbi, meta_dbi;
 
 		void add_decided_block_(block_ptr_t blk, std::vector<uint8_t> const& serialized_vm_blk_id);
 
 	public:
-		txn(speedex::dbenv::wtxn&& tx, MDB_dbi data_dbi, MDB_dbi meta_dbi);
+		txn(lmdb::dbenv::wtxn&& tx, MDB_dbi data_dbi, MDB_dbi meta_dbi);
 		
 		template<typename vm_block_id>
 		void add_decided_block(block_ptr_t blk, vm_block_id const& id);
@@ -69,8 +69,8 @@ public:
 
 	class cursor {
 
-		speedex::dbenv::txn rtx;
-		speedex::dbenv::cursor c;
+		lmdb::dbenv::txn rtx;
+		lmdb::dbenv::cursor c;
 
 		friend class HotstuffLMDB;
 		cursor(HotstuffLMDB const& lmdb)
@@ -81,17 +81,17 @@ public:
 	public:
 	
 		struct iterator {
-			speedex::dbenv::cursor::iterator it;
+			lmdb::dbenv::cursor::iterator it;
 
-			using kv_t = std::pair<uint64_t, speedex::Hash>;
+			using kv_t = std::pair<uint64_t, Hash>;
 
-			iterator(speedex::dbenv::cursor& c) : it(c) {}
+			iterator(lmdb::dbenv::cursor& c) : it(c) {}
 			constexpr iterator() : it(nullptr) {}
 
 			kv_t operator*();
 
 			template<typename vm_block_id>
-			std::pair<speedex::Hash, vm_block_id>
+			std::pair<Hash, vm_block_id>
 			get_hs_hash_and_vm_data();
 
 			iterator& operator++() { ++it; return *this; }
@@ -118,7 +118,7 @@ public:
 	
 	template<typename vm_block_type>
 	vm_block_type
-	static load_vm_block(speedex::Hash const& hash);
+	static load_vm_block(Hash const& hash);
 };
 
 template<typename vm_block_id>
@@ -129,7 +129,7 @@ HotstuffLMDB::txn::add_decided_block(block_ptr_t blk, vm_block_id const& id)
 }
 
 template<typename vm_block_id>
-std::optional<std::pair<speedex::Hash, vm_block_id>>
+std::optional<std::pair<Hash, vm_block_id>>
 HotstuffLMDB::get_decided_hash_id_pair(uint64_t height) const {
 	auto out = get_decided_hash_id_pair_(height);
 	if (!out) {
@@ -139,11 +139,11 @@ HotstuffLMDB::get_decided_hash_id_pair(uint64_t height) const {
 }
 
 template<typename vm_block_id>
-std::pair<speedex::Hash, vm_block_id>
+std::pair<Hash, vm_block_id>
 HotstuffLMDB::cursor::iterator::get_hs_hash_and_vm_data() {
 	auto const& [_, v] = *it;
 
-	speedex::Hash hash;
+	Hash hash;
 	std::vector<uint8_t> hash_bytes;
 	auto value_bytes = v.bytes();
 	hash_bytes.insert(hash_bytes.end(), value_bytes.begin(), value_bytes.begin() + hash.size());
@@ -157,7 +157,7 @@ HotstuffLMDB::cursor::iterator::get_hs_hash_and_vm_data() {
 
 template<typename vm_block_type>
 vm_block_type
-HotstuffLMDB::load_vm_block(speedex::Hash const& hash)
+HotstuffLMDB::load_vm_block(Hash const& hash)
 {
 	auto unparsed_opt = load_block(hash);
 	if (!unparsed_opt) {

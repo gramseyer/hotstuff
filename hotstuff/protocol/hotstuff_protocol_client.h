@@ -1,12 +1,10 @@
 #pragma once
 
-#include "config/replica_config.h"
+#include "hotstuff/config/replica_config.h"
 
-#include "rpc/rpcconfig.h"
+#include "hotstuff/nonblocking_rpc_client.h"
 
-#include "utils/nonblocking_rpc_client.h"
-
-#include "xdr/hotstuff.h"
+#include "hotstuff/xdr/hotstuff.h"
 
 #include <memory>
 #include <variant>
@@ -16,10 +14,10 @@
 
 namespace hotstuff {
 
-class HotstuffProtocolClient : public speedex::NonblockingRpcClient<xdr::srpc_client<HotstuffProtocolV1>> {
+class HotstuffProtocolClient : public NonblockingRpcClient<xdr::srpc_client<HotstuffProtocolV1>> {
 
-	using speedex::AsyncWorker::mtx;
-	using speedex::AsyncWorker::cv;
+	using utils::AsyncWorker::mtx;
+	using utils::AsyncWorker::cv;
 
 	using vote_t = std::shared_ptr<VoteMessage>;
 	using proposal_t = std::shared_ptr<ProposeMessage>;
@@ -38,7 +36,7 @@ class HotstuffProtocolClient : public speedex::NonblockingRpcClient<xdr::srpc_cl
 
 public:
 
-	HotstuffProtocolClient (speedex::ReplicaInfo const& info)
+	HotstuffProtocolClient (ReplicaInfo const& info)
 		: NonblockingRpcClient<xdr::srpc_client<HotstuffProtocolV1>>(info)
 		, work()
 		{
@@ -56,8 +54,8 @@ public:
 	void
 	vote(vote_t vote);
 
-	const char* get_service() const override final {
-		return HOTSTUFF_PROTOCOL_PORT;
+	ReplicaService get_service() const override final {
+		return ReplicaService::PROTOCOL_SERVICE;
 	}
 
 

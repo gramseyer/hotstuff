@@ -1,10 +1,8 @@
 #pragma once
 
-#include "config/replica_config.h"
+#include "hotstuff/config/replica_config.h"
 
-#include "rpc/rpcconfig.h"
-
-#include "xdr/hotstuff.h"
+#include "hotstuff/xdr/hotstuff.h"
 
 #include <xdrpp/pollset.h>
 #include <xdrpp/srpc.h>
@@ -17,13 +15,13 @@ class HotstuffProtocolHandler {
 
 	NetworkEventQueue& queue;
 
-	const speedex::ReplicaConfig& config;
+	const ReplicaConfig& config;
 
 public:
 
 	using rpc_interface_type = HotstuffProtocolV1;
 
-	HotstuffProtocolHandler(NetworkEventQueue& queue, const speedex::ReplicaConfig& config)
+	HotstuffProtocolHandler(NetworkEventQueue& queue, const ReplicaConfig& config)
 		: queue(queue)
 		, config(config)
 		{}
@@ -43,7 +41,7 @@ class HotstuffProtocolServer {
 
 public:
 
-	HotstuffProtocolServer(NetworkEventQueue& queue, const speedex::ReplicaConfig& config);
+	HotstuffProtocolServer(NetworkEventQueue& queue, const ReplicaConfig& config, const ReplicaID self_id);
 };
 
 

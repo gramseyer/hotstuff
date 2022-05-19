@@ -1,12 +1,12 @@
 #pragma once
 
-#include "config/replica_config.h"
+#include "hotstuff/config/replica_config.h"
 
-#include "hotstuff/crypto.h"
+#include "hotstuff/crypto/certs.h"
 
-#include "utils/debug_macros.h"
+#include "hotstuff/xdr/hotstuff.h"
 
-#include "xdr/hotstuff.h"
+#include "hotstuff/hotstuff_debug_macros.h"
 
 #include <cstdint>
 #include <optional>
@@ -35,7 +35,7 @@ class HotstuffBlock {
 	//genesis_block lacks this
 	std::optional<QuorumCertificate> parsed_qc;
 
-	speedex::ReplicaID proposer;  //0 (starting proposer) for genesis block
+	ReplicaID proposer;  //0 (starting proposer) for genesis block
 
 	//derived from header, with help of block store
 	uint64_t block_height;
@@ -61,7 +61,7 @@ class HotstuffBlock {
 	//load block
 	HotstuffBlock(HotstuffBlockWire&& _wire_block, load_from_disk_block_t);
 
-	HotstuffBlock(HotstuffBlockWire&& _wire_block, speedex::ReplicaID proposer);
+	HotstuffBlock(HotstuffBlockWire&& _wire_block, ReplicaID proposer);
 
 public:
 
@@ -80,7 +80,7 @@ public:
 		decided = true;
 	}
 
-	speedex::ReplicaID 
+	ReplicaID 
 	get_proposer() const {
 		return proposer;
 	}
@@ -89,7 +89,7 @@ public:
 		return block_height;
 	}
 
-	bool supports_nonempty_child_proposal(const speedex::ReplicaID self_id, int depth = 3) const;
+	bool supports_nonempty_child_proposal(const ReplicaID self_id, int depth = 3) const;
 
 	bool validate_hash() const;
 
@@ -98,7 +98,7 @@ public:
 	 * (1) hash(wire_block.body) == wire_block.body_hash
 	 * (2) quorum cert is valid
 	 */
-	bool validate_hotstuff(const speedex::ReplicaConfig& config) const;
+	bool validate_hotstuff(const ReplicaConfig& config) const;
 
 	/*
 	 * Try to parse body into a speedex (header, txs) pair.
@@ -123,17 +123,17 @@ public:
 		return parsed_block_body;
 	}
 
-	const speedex::Hash& 
+	const Hash& 
 	get_hash() const {
 		return self_qc.get_obj_hash();
 	}
 
-	const speedex::Hash& 
+	const Hash& 
 	get_justify_hash() const {
 		return parsed_qc->get_obj_hash();
 	}
 
-	const speedex::Hash& 
+	const Hash& 
 	get_parent_hash() const {
 		return wire_block.header.parent_hash;
 	}
@@ -176,18 +176,18 @@ public:
 	static block_ptr_t
 	receive_block(
 		HotstuffBlockWire&& body,
-		speedex::ReplicaID source);
+		ReplicaID source);
 
 	static block_ptr_t 
 	mint_block(
 		xdr::opaque_vec<>&& body, 
 		QuorumCertificateWire const& qc_wire, 
-		speedex::Hash const& parent_hash, 
-		speedex::ReplicaID proposer);
+		Hash const& parent_hash, 
+		ReplicaID proposer);
 
 	static block_ptr_t
 	load_decided_block(
-		speedex::Hash const& hash); 
+		Hash const& hash); 
 };
 
 } /* hotstuff */

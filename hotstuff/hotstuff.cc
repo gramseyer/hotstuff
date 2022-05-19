@@ -1,7 +1,7 @@
 #include "hotstuff/hotstuff.h"
 
 #include "hotstuff/block.h"
-#include "hotstuff/crypto.h"
+#include "hotstuff/crypto/certs.h"
 
 #include "utils/debug_utils.h"
 
@@ -9,19 +9,15 @@ namespace hotstuff {
 
 using xdr::operator==;
 
-using speedex::Hash;
-using speedex::ReplicaConfig;
-using speedex::ReplicaID;
-
-HotstuffAppBase::HotstuffAppBase(const ReplicaConfig& config_, ReplicaID self_id, speedex::SecretKey sk)
+HotstuffAppBase::HotstuffAppBase(const ReplicaConfig& config_, ReplicaID self_id, SecretKey sk)
 	: HotstuffCore(config_, self_id)
 	, block_store(get_genesis())
 	, block_fetch_manager(block_store, config)
-	, block_fetch_server(block_store)
+	, block_fetch_server(block_store, config.get_info(self_id))
 	, event_queue(*this)
 	, network_event_queue(event_queue, block_fetch_manager, block_store, config)
 	, protocol_manager(event_queue, config, self_id)
-	, protocol_server(network_event_queue, config)
+	, protocol_server(network_event_queue, config, self_id)
 	, secret_key(sk)
 	, qc_wait_mtx()
 	, qc_wait_cv()
@@ -48,7 +44,7 @@ HotstuffAppBase::notify_ok_to_prune_blocks(uint64_t committed_hotstuff_height) {
 }
 
 block_ptr_t 
-HotstuffAppBase::find_block_by_hash(speedex::Hash const& hash) 
+HotstuffAppBase::find_block_by_hash(Hash const& hash) 
 {
 	auto out = block_store.get_block(hash);
 	if (!out) {
@@ -58,7 +54,7 @@ HotstuffAppBase::find_block_by_hash(speedex::Hash const& hash)
 }
 
 
-speedex::Hash
+Hash
 HotstuffAppBase::do_propose()
 {
 	std::lock_guard lock(proposal_mutex);
@@ -81,7 +77,7 @@ HotstuffAppBase::do_propose()
 	return b_leaf -> get_hash();
 }
 
-speedex::Hash
+Hash
 HotstuffAppBase::do_empty_propose()
 {
 	std::lock_guard lock(proposal_mutex);
@@ -105,7 +101,7 @@ HotstuffAppBase::do_empty_propose()
 }
 
 void 
-HotstuffAppBase::on_new_qc(speedex::Hash const& hash)
+HotstuffAppBase::on_new_qc(Hash const& hash)
 {
 	std::lock_guard lock(qc_wait_mtx);
 	latest_new_qc = hash;
@@ -113,7 +109,7 @@ HotstuffAppBase::on_new_qc(speedex::Hash const& hash)
 }
 
 bool
-HotstuffAppBase::wait_for_new_qc(speedex::Hash const& expected_next_qc)
+HotstuffAppBase::wait_for_new_qc(Hash const& expected_next_qc)
 {
 	std::unique_lock lock(qc_wait_mtx);
 	if ((!latest_new_qc) && (!cancel_wait)) {

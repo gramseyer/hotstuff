@@ -21,46 +21,57 @@
 
 #include <sodium.h>
 
-#include "config/replica_config.h"
+#include "hotstuff/config/replica_config.h"
 
-#include "xdr/types.h"
-#include "xdr/hotstuff.h"
+#include "hotstuff/xdr/types.h"
+#include "hotstuff/xdr/hotstuff.h"
 
 #include <map>
 
 namespace hotstuff {
 
+/**!
+ * Certificate of one vote from one replica on one hash.
+ * These are combined into a quorum cert.
+ * Extends PartialCertificateWire, the serializable version of the structure (defined in xdr/hotstuff.x)
+ */
 struct PartialCertificate : public PartialCertificateWire {
 
-    PartialCertificate(const speedex::Hash& _hash, const speedex::SecretKey& sk);
+    PartialCertificate(const Hash& _hash, const SecretKey& sk);
 
     PartialCertificate(PartialCertificateWire&& wire_cert);
 
-    bool validate(const speedex::ReplicaInfo& info) const;
+    bool validate(const ReplicaInfo& info) const;
 };
 
 class QuorumCertificate {
 
-    speedex::Hash obj_hash;
-    std::map<speedex::ReplicaID, speedex::Signature> sigs;
+    Hash obj_hash;
+    std::map<ReplicaID, Signature> sigs;
 
 public:
 
-    QuorumCertificate(const speedex::Hash& obj_hash);
+    QuorumCertificate(const Hash& obj_hash);
     QuorumCertificate(QuorumCertificateWire const& qc_wire);
 
-    // for building
-    void add_partial_certificate(speedex::ReplicaID rid, const PartialCertificate& pc);
-    bool has_quorum(const speedex::ReplicaConfig& config) const; // assumes all certs inserted by add_partial_certificate are valid.
+    //! for building a QC from PCs.
+    //! Does not check the signature - this should be done in advance.
+    void add_partial_certificate(ReplicaID rid, const PartialCertificate& pc);
+
+    //! Checks whether the QC has enough certificates for a quorum.
+    //! assumes all certs inserted by add_partial_certificate are valid.
+    //! (i.e. check certs before adding them with add_partial_certificate)
+    bool has_quorum(const ReplicaConfig& config) const; 
 
     // for verifying qc from another node
-    bool verify(const speedex::ReplicaConfig &config) const;
+    bool verify(const ReplicaConfig &config) const;
 
-    const speedex::Hash& 
+    const Hash& 
     get_obj_hash() const {
         return obj_hash;
     }
 
+    //! Serialize to a representation that can be sent over the wire.
     QuorumCertificateWire serialize() const;
 };
 

@@ -1,11 +1,11 @@
 #pragma once
 
-#include "config/replica_config.h"
+#include "hotstuff/config/replica_config.h"
 
-#include "hotstuff/crypto.h"
+#include "hotstuff/crypto/certs.h"
 #include "hotstuff/event.h"
 
-#include "xdr/hotstuff.h"
+#include "hotstuff/xdr/hotstuff.h"
 
 namespace hotstuff {
 
@@ -14,19 +14,19 @@ class HotstuffBlock;
 class VoteNetEvent {
 
 	PartialCertificate cert;
-	speedex::ReplicaID voter;
+	ReplicaID voter;
 
 public:
 
 	VoteNetEvent(std::unique_ptr<VoteMessage> v);
 
-	bool validate(const speedex::ReplicaConfig& config) const;
+	bool validate(const ReplicaConfig& config) const;
 
-	speedex::Hash const& get_block_hash() const {
+	Hash const& get_block_hash() const {
 		return cert.hash;
 	}
 
-	speedex::ReplicaID get_voter() const {
+	ReplicaID get_voter() const {
 		return voter;
 	}
 
@@ -35,19 +35,19 @@ public:
 
 class ProposalNetEvent {
 	block_ptr_t proposed_block;
-	speedex::ReplicaID proposer;
+	ReplicaID proposer;
 
 public:
 
 	ProposalNetEvent(std::unique_ptr<ProposeMessage> p);
 
-	bool validate(const speedex::ReplicaConfig& config) const;
+	bool validate(const ReplicaConfig& config) const;
 
-	speedex::Hash const& get_parent_hash() const {
+	Hash const& get_parent_hash() const {
 		return proposed_block->get_parent_hash();
 	}
 
-	speedex::ReplicaID get_proposer() const {
+	ReplicaID get_proposer() const {
 		return proposer;
 	}
 
@@ -61,11 +61,11 @@ public:
 
 class BlockReceiveNetEvent {
 	block_ptr_t received_block;
-	speedex::ReplicaID sender;
+	ReplicaID sender;
 
 public:
 
-	BlockReceiveNetEvent(block_ptr_t blk, speedex::ReplicaID sender)
+	BlockReceiveNetEvent(block_ptr_t blk, ReplicaID sender)
 		: received_block(blk)
 		, sender(sender)
 		{}
@@ -74,11 +74,11 @@ public:
 		return received_block;
 	}
 
-	speedex::ReplicaID get_sender() const {
+	ReplicaID get_sender() const {
 		return sender;
 	}
 
-	bool validate(const speedex::ReplicaConfig& config) const;
+	bool validate(const ReplicaConfig& config) const;
 };
 
 struct NetEvent {
@@ -89,7 +89,7 @@ struct NetEvent {
 		: net_event(event)
 		{}
 
-	bool validate(const speedex::ReplicaConfig& config) const;
+	bool validate(const ReplicaConfig& config) const;
 };
 
 } /* hotstuff */

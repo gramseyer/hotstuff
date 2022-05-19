@@ -4,7 +4,7 @@ namespace hotstuff {
 
 
 BlockGarbageCollector::BlockGarbageCollector()
-	: speedex::AsyncWorker()
+	: AsyncWorker()
 	, hotstuff_height_to_gc(std::nullopt)
 	, gc_list()
 	, gc_list_buffer()

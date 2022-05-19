@@ -5,8 +5,6 @@
 
 namespace hotstuff {
 
-using speedex::ReplicaConfig;
-
 void
 HotstuffProtocolHandler::vote(std::unique_ptr<VoteMessage> v)
 {
@@ -30,10 +28,16 @@ HotstuffProtocolHandler::propose(std::unique_ptr<ProposeMessage> p)
 			ProposalNetEvent(std::move(p))));
 }
 
-HotstuffProtocolServer::HotstuffProtocolServer(NetworkEventQueue& queue, const ReplicaConfig& config)
+HotstuffProtocolServer::HotstuffProtocolServer(NetworkEventQueue& queue, const ReplicaConfig& config, const ReplicaID self_id)
 	: handler(queue, config)
 	, ps()
-	, protocol_listener(ps, xdr::tcp_listen(HOTSTUFF_PROTOCOL_PORT, AF_INET), false, xdr::session_allocator<void>())
+	, protocol_listener(
+		ps, 
+		xdr::tcp_listen(
+			config.get_info(self_id).get_service_name(ReplicaService::PROTOCOL_SERVICE), 
+			AF_INET), 
+		false, 
+		xdr::session_allocator<void>())
 	{
 		protocol_listener.register_service(handler);
 		
