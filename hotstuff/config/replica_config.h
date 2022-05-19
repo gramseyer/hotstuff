@@ -66,7 +66,7 @@ public:
 
     ReplicaConfig();
 
-    void add_replica(ReplicaID rid, const ReplicaInfo &info);
+    void add_replica(const ReplicaInfo &info);
     void finish_init();
 
 

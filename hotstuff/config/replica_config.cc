@@ -48,7 +48,8 @@ ReplicaConfig::ReplicaConfig()
 
 
 void
-ReplicaConfig::add_replica(ReplicaID rid, const ReplicaInfo &info) {
+ReplicaConfig::add_replica(const ReplicaInfo &info) {
+	auto rid = info.id;
 	auto it = replica_map.find(rid);
 	if (it != replica_map.end()) {
 		throw std::runtime_error("can't add replicaid twice!");

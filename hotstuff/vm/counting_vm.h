@@ -53,6 +53,15 @@ public:
 		return CountingVMBlockID{};
 	}
 
+	uint64_t get_last_committed_height() const
+	{
+		return last_committed_state;
+	}
+	uint64_t get_speculative_height() const
+	{
+		return state;
+	}
+
 	void init_clean() {
 		state = 0;
 		last_committed_state = 0;

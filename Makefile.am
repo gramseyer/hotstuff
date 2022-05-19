@@ -37,7 +37,8 @@ HOTSTUFF_SRCS = \
 	hotstuff/vm/counting_vm.cc
 
 HOTSTUFF_TEST_SRCS = \
-	hotstuff/vm/tests/test_speculative_exec_gadget.cc
+	hotstuff/vm/tests/test_speculative_exec_gadget.cc \
+	hotstuff/vm/tests/test_counting_vm.cc
 
 LMDB_SRCS = \
 	lmdb/lmdb_types.cc \

@@ -14,7 +14,6 @@
 
 namespace hotstuff {
 
-
 /** 
  * Bridge between hotstuff consensus and the replicated
  * state machine.  
