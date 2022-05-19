@@ -1,6 +1,5 @@
 #include <catch2/catch_test_macros.hpp>
 
-
 #include "hotstuff/vm/speculative_exec_gadget.h"
 #include <cstdint>
 

@@ -23,7 +23,7 @@ namespace hotstuff {
  * based off the canceled contents.
  * ==Note== this race condtion is accounted for
  * by the explicit rewind condition in apply_block
- * ========
+ * 
  * This motivates the strict sequentiality and
  * the tracking of speculation_head_hotstuff_height.
  * The check for hotstuff_height == speculation_head_hotstuff_height
@@ -32,12 +32,13 @@ namespace hotstuff {
  * to only propose nonempty blocks on self-proposals.
  * That say, the VM doesn't stack a proposal on top of a
  * conflicting proposal.
+ * 
  * ==Note== this last bit is not required from the VM's pov
  * but from hotstuff's.  It'd be incorrect to interleave
  * proposals from different VM's, without synchronizing the VMs
  * between proposals (i.e. VM1 proposes X on Z, VM2 proposes Y on Z,
  * and then hotstuff on machine 1 proposes X on Y).
- * ========
+ * 
 */
 template<typename VMValueType>
 class SpeculativeExecGadget {
@@ -64,22 +65,41 @@ public:
 		, highest_committed_height(0)
 		{}
 
+	//! Log speculation of block id vm_value at hotstuff's block height hotstuff_height
 	void add_height_pair(uint64_t hotstuff_height, VMValueType vm_value);
 
+	//! Log that hotstuff's block height hotstuff_height has committed,
+	//! and return the vm's block id that was speculatively executed
+	//! at that height.
+	//! This vm block id could be rederived in the locations
+	//! where this fn is called, but we have the id here, so
+	//! returning it saves work (in current usage patterns,
+	//! this avoids re-parsing blocks, because hotstuff
+	//! stores blocks as opaque blobs to avoid having to understand
+	//! their semantic meaning).
 	VMValueType on_commit_hotstuff(uint64_t hotstuff_height);
 
 	void clear();
 
+	//! Doesn't actually load anything from disk,
+	//! but is called when the vm bridge loads data from
+	//! disk.  Properly initializes this gadget
+	//! to begin speculating from the reloaded hotstuff height.
 	void init_from_disk(uint64_t highest_decided_height) {
 		highest_committed_height = highest_decided_height;
 		clear(); // set everything else
 	}
 
-	std::lock_guard<std::mutex> lock() {
+	std::lock_guard<std::mutex> 
+	lock() {
 		mtx.lock();
 		return {mtx, std::adopt_lock};
 	}
 
+	//! Get the lowest speculatively executed entry.
+	//! Used when comparing applied blocks to speculated blocks.
+	//! If this block gets unwound, then every subsequent speculated
+	//! block also must be unwound.
 	const value_t& 
 	get_lowest_speculative_hotstuff_height() const {
 		if (empty()) {
@@ -98,6 +118,7 @@ void
 SpeculativeExecGadget<VMValueType>::add_height_pair(uint64_t hotstuff_height, VMValueType vm_value)
 {
 	if (speculation_head_hotstuff_height != hotstuff_height) {
+		// comes up in tests, should not happen in regular operation.
 		std::printf("WARN: speculation_head_hotstuff_height != hotstuff_height\n");
 		return;
 	}

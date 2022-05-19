@@ -13,6 +13,14 @@ namespace hotstuff {
 
 class HotstuffLMDB;
 
+/**
+ * Wraps the virtual machine in an asynchronous interface
+ * that buffers requests in and out of the machine.
+ * 
+ * Manages a proposal buffer and a buffer of decided blocks
+ * that the virtual machine must handle.
+ * 
+ */
 template<typename VMType>
 class VMControlInterface : public utils::AsyncWorker {
 	std::shared_ptr<VMType> vm_instance;
@@ -162,6 +170,10 @@ VMControlInterface<VMType>::submit_block_for_exec(submission_t submission)
 }
 
 //! log_commitment should be called in order in which things are committed
+//! Note that it is possible, albeit likely rare, that
+//! some block_ids would get skipped
+//! (if, for example, this method gets called twice in succession
+//! before the run() thread wakes on the cv).
 template<typename VMType>
 void
 VMControlInterface<VMType>::log_commitment(typename VMType::block_id block_id) {
@@ -173,12 +185,6 @@ VMControlInterface<VMType>::log_commitment(typename VMType::block_id block_id) {
 	if (highest_committed_id) {
 		cv.notify_all();
 	}
-
-	/*if (highest_committed_id) {
-		*highest_committed_id = std::max(*highest_committed_id, block_id);
-	} else {
-		highest_committed_id = std::make_optional(block_id);
-	}*/
 }
 
 
@@ -231,6 +237,20 @@ VMControlInterface<VMType>::run() {
 	}
 }
 
+//! wait for the vm to finish whatever it's doing.
+//! Then rewinds the vm to its last committed state.
+//! Note: this method does not acquire a lock for the whole
+//! duration of its execution,
+//! so proposals and other calls into the vm
+//! should not be executed while this runs.
+//! In this implementation, this property is guaranteed
+//! by the fact that apply_block is not called
+//! concurrently with notify_vm_of_commitment 
+//! (in the vm bridge)
+//! and get_and_apply_next_proposal and apply_block
+//! both acquire a lock on speculation_map.
+//! TODO this arrangement is fragile, and would be easy
+//! to accidentally break.
 template<typename VMType>
 void
 VMControlInterface<VMType>::finish_work_and_force_rewind() {

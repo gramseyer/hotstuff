@@ -29,7 +29,6 @@ TEST_CASE("single replica", "[vm]")
 	HotstuffApp app(config, r1.id, sk, vm);
 	app.init_clean();
 
-
 	PaceMakerWaitQC pmaker(app);
 	pmaker.set_self_as_proposer();
 	app.put_vm_in_proposer_mode();
