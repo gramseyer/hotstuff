@@ -28,14 +28,14 @@ class PaceMakerWaitQC {
 
     HotstuffAppBase& hotstuff_app;
 
-    speedex::Hash expected_hash;
+    Hash expected_hash;
 
 
     void rotate_proposers() {
         proposer = (proposer + 1) % hotstuff_app.get_config().nreplicas;
     }
     
-    speedex::ReplicaID proposer;
+    ReplicaID proposer;
 
 public:
 
