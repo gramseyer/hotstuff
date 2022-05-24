@@ -126,8 +126,6 @@ public:
 	void apply_block(block_ptr_t blk, HotstuffLMDB::txn& txn) {
 
 		init_guard();
-
-		auto lock = speculation_map.lock();
 		
 		auto blk_value = blk -> template try_vm_parse<vm_block_type>();
 		auto blk_id = get_block_id(blk_value);
@@ -146,14 +144,6 @@ public:
 		// no op
 	}
 
-	//! Notify the VM that it should be ready to generate proposals.
-	void put_vm_in_proposer_mode() {
-		init_guard();
-		// TODO is this a no op?
-		
-		//vm_interface.set_proposer();
-	}
-
 	//! checks whether the vm has any proposals to give.
 	//! main use case is managing an orderly system shutdown.
 	bool proposal_buffer_is_empty() const {
@@ -165,11 +155,6 @@ public:
 	{
 		std::lock_guard lock(mtx);
 		proposal_buffer.insert(proposal_buffer.begin(), std::move(proposal));
-	}
-
-	//! For orderly shutdown -- tell the vm to stop making new proposals.
-	void stop_proposals() {
-		//TODO shutdown proposals.
 	}
 };
 

@@ -1,6 +1,5 @@
 #pragma once
 
-
 /** \file hotstuff_vm_bridge.h
  * 
  * The "VM Bridge" is the main interaction layer
