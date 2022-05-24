@@ -22,24 +22,6 @@ PKG_CHECK_MODULES([lmdb], [lmdb])
 PKG_CHECK_MODULES([tbb], [tbb])
 PKG_CHECK_MODULES([Catch2], [Catch2])
 
-PKG_CHECK_MODULES(LIBFYAML, [ libfyaml ], HAVE_LIBFYAML=1, HAVE_LIBFYAML=0)
-
-if test "x$HAVE_LIBFYAML" != "x1" ; then
-	AC_MSG_ERROR([failed to find libfyaml])
-fi
-
-AC_SUBST(HAVE_LIBFYAML)
-AC_SUBST(LIBFYAML_CFLAGS)
-AC_SUBST(LIBFYAML_LIBS)
-AC_DEFINE_UNQUOTED([HAVE_LIBFYAML], [$HAVE_LIBFYAML], [Define to 1 if you have libfyaml available])
-AM_CONDITIONAL([HAVE_LIBFYAML], [ test x$HAVE_LIBFYAML = x1 ])
-
-AS_IF([test -z "${ROOT_DB_DIRECTORY}"], [ROOT_DB_DIRECTORY="databases/"])
-AS_IF([test -z "${ACCOUNT_DB}"], [ACCOUNT_DB="account_database/"])
-AS_IF([test -z "${OFFER_DB}"], [OFFER_DB="offer_database/"])
-AS_IF([test -z "${HEADER_HASH_DB}"], [HEADER_HASH_DB="header_hash_database/"])
-AS_IF([test -z "${TX_BLOCK_DB}"], [TX_BLOCK_DB="tx_block_database/"])
-AS_IF([test -z "${HEADER_DB}"], [HEADER_DB="header_database/"])
 AS_IF([test -z "${HOTSTUFF_BLOCKS}"], [HOTSTUFF_BLOCKS="hotstuff_blocks/"])
 AS_IF([test -z "${HOTSTUFF_INDEX}"], [HOTSTUFF_INDEX="hotstuff_index/"])
 
