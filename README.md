@@ -43,6 +43,8 @@ Contributions of any kind are very welcome.
 
 `make test` for tests
 
+Requires a C++2a-capable compiler.
+
 ## API Usage
 
 ReplicaConfig manages a map of which replicas are located at which addresses.  Dynamic reconfiguration not supported.
