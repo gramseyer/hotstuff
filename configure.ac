@@ -22,6 +22,8 @@ PKG_CHECK_MODULES([lmdb], [lmdb])
 PKG_CHECK_MODULES([tbb], [tbb])
 PKG_CHECK_MODULES([Catch2], [Catch2])
 
+
+AS_IF([test -z "${ROOT_DB_DIRECTORY}"], [ROOT_DB_DIRECTORY="database_root/"])
 AS_IF([test -z "${HOTSTUFF_BLOCKS}"], [HOTSTUFF_BLOCKS="hotstuff_blocks/"])
 AS_IF([test -z "${HOTSTUFF_INDEX}"], [HOTSTUFF_INDEX="hotstuff_index/"])
 
