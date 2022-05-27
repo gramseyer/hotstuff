@@ -111,7 +111,7 @@ constexpr static auto FILE_PERMISSIONS = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP |
 /*! Preallocate a file for later usage
 */
 unique_fd static inline
-preallocate_file(const char* filename, size_t size = 0) {
+preallocate_file(const char* filename, [[maybe_unused]] size_t size = 0) {
 
 	#ifdef __APPLE__
 

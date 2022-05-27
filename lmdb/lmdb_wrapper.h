@@ -71,7 +71,8 @@ public:
     return env_open;
   }
 
-  dbenv::wtxn wbegin() const {
+  dbenv::wtxn 
+  wbegin() const {
     if (!env_open) {
       throw std::runtime_error("can't access a db if env is unopened");
     }
@@ -87,7 +88,8 @@ public:
     env.sync();
   }
 
-  const MDB_dbi get_metadata_dbi() const {
+  MDB_dbi 
+  get_metadata_dbi() const {
     return metadata_dbi;
   }
 
