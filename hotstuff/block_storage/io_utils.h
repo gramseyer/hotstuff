@@ -7,9 +7,6 @@
 namespace hotstuff {
 
 std::string
-block_filename(const HotstuffBlockWire& block);
-
-std::string
 block_filename(const Hash& header_hash);
 
 void save_block(const HotstuffBlockWire& block);
