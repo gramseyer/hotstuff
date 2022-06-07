@@ -136,7 +136,7 @@ public:
 		//vm_interface.submit_block_for_exec(std::move(blk_value));
 		
 		//TODO this call is blocking
-		vm -> exec_block(blk_value);
+		vm -> exec_block(*blk_value);
 		VM_BRIDGE_INFO("done submit for exec %lu", blk -> get_height());
 	}
 

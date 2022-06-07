@@ -9,7 +9,7 @@ namespace hotstuff {
 class BlockFetchManager;
 class BlockStore;
 class EventQueue;
-class NetEvent;
+struct NetEvent;
 
 class NetworkEventQueue : public GenericEventQueue<NetEvent>
 {
