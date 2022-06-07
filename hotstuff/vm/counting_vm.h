@@ -1,6 +1,7 @@
 #pragma once
 
 #include "hotstuff/hotstuff_debug_macros.h"
+#include "hotstuff/vm/vm_block_id.h"
 
 #include <compare>
 #include <cstdint>
@@ -13,29 +14,11 @@ namespace hotstuff {
 
 class HotstuffLMDB;
 
-struct CountingVMBlockID {
-	std::optional<uint64_t> value;
+//! Demo class for vm types + block ids.
+//! Important: block_id should be in bijection with
+//! block_type (up to computational limits; e.g. block_id = sha256(block_type) is fine)
 
-	CountingVMBlockID() : value(std::nullopt) {}
-	CountingVMBlockID(uint64_t value) : value(value) {}
-
-	CountingVMBlockID(std::vector<uint8_t> const& bytes);
-
-	bool operator==(const CountingVMBlockID&) const = default;
-
-	std::vector<uint8_t>
-	serialize() const {
-		if (!value) {
-			return {};
-		}
-		return xdr::xdr_to_opaque(*value);
-	}
-
-	operator bool() const {
-		return value.has_value();
-	}
-};
-
+typedef VMBlockID<uint64_t> CountingVMBlockID;
 
 class CountingVM {
 	uint64_t state = 0;
