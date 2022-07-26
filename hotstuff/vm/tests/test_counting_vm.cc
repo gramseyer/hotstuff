@@ -1,6 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "hotstuff/vm/counting_vm.h"
+#include "examples/vm/counting_vm.h"
 
 #include "hotstuff/config/replica_config.h"
 #include "hotstuff/crypto/crypto_utils.h"

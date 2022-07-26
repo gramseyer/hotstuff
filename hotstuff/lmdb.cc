@@ -2,12 +2,22 @@
 
 #include "utils/serialize_big_endian.h"
 
+#include "hotstuff/manage_data_dirs.h"
+
 namespace hotstuff {
 
 using lmdb::dbval;
 
+void
+HotstuffLMDB::open_env()
+{
+	std::string lmdb_folder = hotstuff_index_lmdb_dir();
+	LMDBInstance::open_env(lmdb_folder);
+}
+
 HotstuffLMDB::cursor::iterator::kv_t 
-HotstuffLMDB::cursor::iterator::operator*() {
+HotstuffLMDB::cursor::iterator::operator*()
+{
 	auto const& [k, v] = *it;
 
 	uint64_t key_parsed;

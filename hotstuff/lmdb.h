@@ -27,10 +27,7 @@ class HotstuffLMDB : private lmdb::LMDBInstance {
 
 	constexpr static auto DB_NAME = "hotstuff";
 
-	void open_env() {
-		LMDBInstance::open_env(
-			std::string(ROOT_DB_DIRECTORY) + std::string(HOTSTUFF_INDEX));
-	}
+	void open_env();
 
 	std::optional<std::pair<Hash, std::vector<uint8_t>>>
 	get_decided_hash_id_pair_(uint64_t height) const;

@@ -11,11 +11,12 @@
 
 namespace hotstuff {
 
-std::string storage_folder = std::string(ROOT_DB_DIRECTORY) + std::string(HOTSTUFF_BLOCKS);
+//std::string storage_folder = std::string(ROOT_DB_DIRECTORY) + std::string(HOTSTUFF_BLOCKS);
 
 void
 make_block_folder() {
-	utils::mkdir_safe(storage_folder.c_str());
+	throw std::runtime_error("unimpl");
+	//utils::mkdir_safe(storage_folder.c_str());
 }
 
 
@@ -43,8 +44,9 @@ std::string
 block_filename(const Hash& header_hash)
 {
 	auto strname = array_to_str(header_hash);
+	throw std::runtime_error("unimpl");
 
-	return storage_folder + strname + std::string(".block");
+	//return storage_folder + strname + std::string(".block");
 }
 
 void save_block(const HotstuffBlockWire& block) {

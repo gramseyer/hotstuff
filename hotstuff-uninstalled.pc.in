@@ -1,0 +1,5 @@
+Name: hotstuff
+Description: hotstuff
+Version: @PACKAGE_VERSION@
+Libs: ${pcfiledir}/libhotstuff.a
+Cflags: -I@abs_top_srcdir@

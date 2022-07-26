@@ -4,13 +4,24 @@ SUBDIRS = $(PKGCONFIG_SUBDIRS)
 
 CLEANFILES = *~ .*~
 
+abs_top_srcdir=@r_abs_top_srcdir@
+abs_top_builddir=@r_abs_top_builddir@
+top_srcdir=@r_top_srcdir@
+top_builddir=@r_top_builddir@
+
 X_FILES = \
 	hotstuff/xdr/types.x \
 	hotstuff/xdr/hotstuff.x
 
 XH_FILES = $(X_FILES:.x=.h)
 
+BUILT_SOURCES = $(XH_FILES)
+
 # main srcs
+
+lib_LIBRARIES = libhotstuff.a
+
+libhotstuff_a_SOURCES = $(HOTSTUFF_SRCS) $(LMDB_SRCS)
 
 HOTSTUFF_SRCS = \
 	hotstuff/block.cc \
@@ -33,8 +44,10 @@ HOTSTUFF_SRCS = \
 	hotstuff/network_event_queue.cc \
 	hotstuff/protocol/hotstuff_protocol_client.cc \
 	hotstuff/protocol/hotstuff_protocol_manager.cc \
-	hotstuff/protocol/hotstuff_server.cc \
-	hotstuff/vm/counting_vm.cc
+	hotstuff/protocol/hotstuff_server.cc
+
+EXAMPLES_SRCS = \
+	examples/vm/counting_vm.cc 
 
 HOTSTUFF_TEST_SRCS = \
 	hotstuff/vm/tests/test_speculative_exec_gadget.cc \
@@ -47,30 +60,39 @@ LMDB_SRCS = \
 UTILS_SRCS = \
 	utils/cleanup.cc
 
+MAIN_CCS = \
+	main/test.cc
+
 SRCS = \
 	$(HOTSTUFF_SRCS) \
 	$(LMDB_SRCS) \
 	$(UTILS_SRCS)
 
-MAIN_CCS = \
-	main/test.cc
-
 TEST_SRCS = \
 	$(HOTSTUFF_TEST_SRCS)
 
-AM_CPPFLAGS = $(xdrpp_CFLAGS) $(tbb_CFLAGS) $(libsodium_CFLAGS) $(lmdb_CFLAGS)
-LDADD = $(xdrpp_LIBS) $(tbb_LIBS) $(libsodium_LIBS)  $(lmdb_LIBS)
+EXTRA_SRCS = \
+	$(EXAMPLES_SRCS) \
+	$(TEST_SRCS)
+
+$(SRCS:.cc=.o): CXXFLAGS += -I./include
+$(EXTRA_SRCS:.cc=.o) : CXXFLAGS += -I./include
+$(MAIN_CCS:.cc=.o) : CXXFLAGS += -I./include
+
+AM_CPPFLAGS = $(xdrpp_CFLAGS) $(libsodium_CFLAGS) $(lmdb_CFLAGS)
+LDADD = $(xdrpp_LIBS) $(libsodium_LIBS)  $(lmdb_LIBS)
 
 $(SRCS:.cc=.o) : $(XH_FILES)
+$(EXTRA_SRCS:.cc=.o) : $(XH_FILES)
 $(MAIN_CCS:.cc=.o) : $(XH_FILES)
 $(TEST_SRCS:.cc=.o) : CXXFLAGS += $(Catch2_CFLAGS)
-$(TEST_SRCS:.cc=.o) : $(XH_FILES)
+
 main/test.o : CXXFLAGS += $(Catch2_CFLAGS)
 
 bin_PROGRAMS = \
 	test
 
-test_SOURCES = $(SRCS) $(TEST_SRCS) main/test.cc
+test_SOURCES = $(SRCS) $(EXTRA_SRCS) main/test.cc
 
 test_LDFLAGS = $(Catch2_LIBS)
 

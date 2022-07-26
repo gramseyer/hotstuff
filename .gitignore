@@ -21,7 +21,8 @@ test
 test_runner.cc
 README
 databases/
-
+*.pc
+libhotstuff.a
 
 #mac
 .DS_STORE

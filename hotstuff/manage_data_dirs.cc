@@ -12,15 +12,19 @@ namespace hotstuff {
 using utils::mkdir_safe;
 
 std::string hotstuff_index_lmdb_dir() {
-	return std::string(ROOT_DB_DIRECTORY) + std::string(HOTSTUFF_INDEX);
+	throw std::runtime_error("unimpl");
+	//return std::string(ROOT_DB_DIRECTORY) + std::string(HOTSTUFF_INDEX);
 }
 
 std::string hotstuff_block_data_dir() {
-	return std::string(ROOT_DB_DIRECTORY) + std::string(HOTSTUFF_BLOCKS);
+	throw std::runtime_error("unimpl");
+	//return std::string(ROOT_DB_DIRECTORY) + std::string(HOTSTUFF_BLOCKS);
 }
 
 void make_hotstuff_dirs() {
-	mkdir_safe(ROOT_DB_DIRECTORY);
+	throw std::runtime_error("umimpl");
+	
+	//mkdir_safe(ROOT_DB_DIRECTORY);
 	auto path = hotstuff_block_data_dir();
 	mkdir_safe(path.c_str());
 	path = hotstuff_index_lmdb_dir();
