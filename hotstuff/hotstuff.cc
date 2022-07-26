@@ -3,6 +3,8 @@
 #include "hotstuff/block.h"
 #include "hotstuff/crypto/certs.h"
 
+#include "hotstuff/lmdb.h"
+
 #include "utils/debug_utils.h"
 
 namespace hotstuff {

@@ -7,7 +7,6 @@
 #include "hotstuff/block_storage/block_store.h"
 #include "hotstuff/consensus.h"
 #include "hotstuff/event_queue.h"
-#include "hotstuff/lmdb.h"
 #include "hotstuff/network_event_queue.h"
 #include "hotstuff/protocol/hotstuff_protocol_manager.h"
 #include "hotstuff/protocol/hotstuff_server.h"
@@ -17,6 +16,8 @@
 #include <xdrpp/types.h>
 
 namespace hotstuff {
+
+
 
 class HotstuffAppBase : public HotstuffCore {
 
@@ -69,6 +70,9 @@ public:
 	void cancel_wait_for_new_qc();
 
 };
+
+class HotstuffLMDB;
+class HotstuffLMDB::txn;
 
 template<typename VMType>
 class HotstuffApp : public HotstuffAppBase {
