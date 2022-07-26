@@ -21,8 +21,6 @@ BUILT_SOURCES = $(XH_FILES)
 
 lib_LIBRARIES = libhotstuff.a
 
-libhotstuff_a_SOURCES = $(HOTSTUFF_SRCS) $(LMDB_SRCS)
-
 HOTSTUFF_SRCS = \
 	hotstuff/block.cc \
 	hotstuff/block_storage/io_utils.cc \
@@ -59,6 +57,8 @@ LMDB_SRCS = \
 
 UTILS_SRCS = \
 	utils/cleanup.cc
+
+libhotstuff_a_SOURCES = $(HOTSTUFF_SRCS) $(LMDB_SRCS) $(UTILS_SRCS)
 
 MAIN_CCS = \
 	main/test.cc

@@ -2,4 +2,5 @@ Name: hotstuff
 Description: hotstuff
 Version: @PACKAGE_VERSION@
 Libs: ${pcfiledir}/libhotstuff.a
+Requires.private: libsodium lmdb
 Cflags: -I@abs_top_srcdir@
