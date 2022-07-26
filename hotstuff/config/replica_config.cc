@@ -33,10 +33,12 @@ ReplicaInfo::ReplicaInfo(
     PublicKey pk, 
     std::string hostname,
     std::string block_fetch_port,
-    std::string protocol_port)
+    std::string protocol_port,
+    std::string root_data_folder)
 	: hostname(hostname)
 	, block_fetch_port(block_fetch_port)
 	, protocol_port(protocol_port)
+	, root_data_folder(root_data_folder)
 	, id(id)
 	, pk(pk)
 	{}

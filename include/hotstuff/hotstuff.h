@@ -12,12 +12,11 @@
 #include "hotstuff/protocol/hotstuff_server.h"
 #include "hotstuff/vm/hotstuff_vm_bridge.h"
 #include "hotstuff/vm/nonspeculative_vm_bridge.h"
+#include "hotstuff/xdr/types.h"
 
 #include <xdrpp/types.h>
 
 namespace hotstuff {
-
-
 
 class HotstuffAppBase : public HotstuffCore {
 
@@ -31,7 +30,7 @@ class HotstuffAppBase : public HotstuffCore {
 	HotstuffProtocolManager protocol_manager; 		// outbound protocol messages
 	HotstuffProtocolServer protocol_server;   		// inbound protocol messages
 
-	SecretKey secret_key;					// sk for this node
+	SecretKey secret_key;							// sk for this node
 
 	std::mutex qc_wait_mtx;
 	std::condition_variable qc_wait_cv;
@@ -72,7 +71,6 @@ public:
 };
 
 class HotstuffLMDB;
-class HotstuffLMDB::txn;
 
 template<typename VMType>
 class HotstuffApp : public HotstuffAppBase {

@@ -10,8 +10,8 @@ top_srcdir=@r_top_srcdir@
 top_builddir=@r_top_builddir@
 
 X_FILES = \
-	hotstuff/xdr/types.x \
-	hotstuff/xdr/hotstuff.x
+	include/hotstuff/xdr/types.x \
+	include/hotstuff/xdr/hotstuff.x
 
 XH_FILES = $(X_FILES:.x=.h)
 

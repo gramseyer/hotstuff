@@ -108,7 +108,7 @@ HotstuffBlock::validate_hotstuff(const ReplicaConfig& config) const {
 }
 
 void
-HotstuffBlock::write_to_disk() {
+HotstuffBlock::write_to_disk(const ReplicaInfo& info) {
 	bool already_written = written_to_disk.test_and_set();
 
 	if (already_written) {
@@ -117,9 +117,9 @@ HotstuffBlock::write_to_disk() {
 
 	// output filename (should be) equal to get_hash()
 	// or equivalently, hash(wire_block.header)
-	save_block(wire_block);
+	save_block(wire_block, info);
 	if (parent_block_ptr != nullptr) {
-		parent_block_ptr -> write_to_disk();
+		parent_block_ptr -> write_to_disk(info);
 	}
 }
 
@@ -157,8 +157,8 @@ HotstuffBlock::mint_block(xdr::opaque_vec<>&& body, QuorumCertificateWire const&
 }
 
 block_ptr_t
-HotstuffBlock::load_decided_block(Hash const& hash) {
-	auto loaded = load_block(hash);
+HotstuffBlock::load_decided_block(Hash const& hash, const ReplicaInfo& info) {
+	auto loaded = load_block(hash, info);
 	if (!loaded) {
 		throw std::runtime_error("failed to load an expected block!");
 	}

@@ -9,11 +9,12 @@
 #include "lmdb/lmdb_types.h"
 #include "lmdb/lmdb_wrapper.h"
 
-#include "xdr/types.h"
+#include "hotstuff/xdr/types.h"
 
 namespace hotstuff {
 
 class QuorumCertificate;
+class ReplicaInfo;
 
 /**
  * Stored value is <key = decided hotstuff height, value = (block hash, block id)>
@@ -26,6 +27,7 @@ class QuorumCertificate;
 class HotstuffLMDB : private lmdb::LMDBInstance {
 
 	constexpr static auto DB_NAME = "hotstuff";
+	const ReplicaInfo& info;
 
 	void open_env();
 
@@ -44,7 +46,7 @@ public:
 
 	using LMDBInstance::sync;
 
-	HotstuffLMDB() : LMDBInstance() { open_env(); }
+	HotstuffLMDB(const ReplicaInfo& info) : LMDBInstance(), info(info) { open_env(); }
 
 	template<typename vm_block_id>
 	std::optional<std::pair<Hash, vm_block_id>>
@@ -123,7 +125,7 @@ public:
 	
 	template<typename vm_block_type>
 	vm_block_type
-	static load_vm_block(Hash const& hash);
+	load_vm_block(Hash const& hash) const;
 };
 
 namespace detail
@@ -181,9 +183,9 @@ HotstuffLMDB::cursor::iterator::get_hs_hash_and_vm_data() {
 
 template<typename vm_block_type>
 vm_block_type
-HotstuffLMDB::load_vm_block(Hash const& hash)
+HotstuffLMDB::load_vm_block(Hash const& hash) const
 {
-	auto unparsed_opt = load_block(hash);
+	auto unparsed_opt = load_block(hash, info);
 	if (!unparsed_opt) {
 		throw std::runtime_error("failed to load expected block");
 	}

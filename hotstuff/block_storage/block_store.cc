@@ -9,7 +9,7 @@
 namespace hotstuff {
 
 void
-BlockStore::write_to_disk(const Hash& hash) {
+BlockStore::write_to_disk(const Hash& hash, const ReplicaInfo& info) {
 	std::lock_guard lock(mtx);
 
 	auto it = block_cache.find(hash);
@@ -19,7 +19,7 @@ BlockStore::write_to_disk(const Hash& hash) {
 		throw std::runtime_error("could not find block that needs to go to disk!");
 	}
 
-	it -> second.block->write_to_disk();
+	it -> second.block->write_to_disk(info);
 }
 
 

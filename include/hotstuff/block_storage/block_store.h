@@ -12,6 +12,7 @@
 #include <optional>
 
 namespace hotstuff {
+class ReplicaInfo;
 
 class BlockStore {
 
@@ -33,11 +34,10 @@ public:
 		, gc_collector()
 		{
 			block_cache.emplace(genesis_block->get_hash(), genesis_block);
-			make_block_folder();
 		}
 
 	// Call before committing to any block (and executing it).
-	void write_to_disk(const Hash& block_hash);
+	void write_to_disk(const Hash& block_hash, const ReplicaInfo& info);
 
 	struct MissingDependencies {
 		std::optional<Hash> parent_hash;

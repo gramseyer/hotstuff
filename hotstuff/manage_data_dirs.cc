@@ -5,53 +5,50 @@
 #include <filesystem>
 #include <system_error>
 
-#include "config.h"
+#include "hotstuff/config/replica_config.h"
 
 namespace hotstuff {
 
 using utils::mkdir_safe;
 
-std::string hotstuff_index_lmdb_dir() {
-	throw std::runtime_error("unimpl");
-	//return std::string(ROOT_DB_DIRECTORY) + std::string(HOTSTUFF_INDEX);
+std::string hotstuff_index_lmdb_dir(const ReplicaInfo& info) {
+
+	return info.root_data_folder + std::string("hotstuff_block_index/");
 }
 
-std::string hotstuff_block_data_dir() {
-	throw std::runtime_error("unimpl");
-	//return std::string(ROOT_DB_DIRECTORY) + std::string(HOTSTUFF_BLOCKS);
+std::string hotstuff_block_data_dir(const ReplicaInfo& info) {
+	return info.root_data_folder + std::string("hotstuff_block_data/");
 }
 
-void make_hotstuff_dirs() {
-	throw std::runtime_error("umimpl");
-	
-	//mkdir_safe(ROOT_DB_DIRECTORY);
-	auto path = hotstuff_block_data_dir();
+void make_hotstuff_dirs(const ReplicaInfo& info) {	
+	mkdir_safe(info.root_data_folder.c_str());
+	auto path = hotstuff_block_data_dir(info);
 	mkdir_safe(path.c_str());
-	path = hotstuff_index_lmdb_dir();
+	path = hotstuff_index_lmdb_dir(info);
 	mkdir_safe(path.c_str());
 }
 
-void clear_hotstuff_dirs() {
-	auto path = hotstuff_block_data_dir();
+void clear_hotstuff_dirs(const ReplicaInfo& info) {
+	auto path = hotstuff_block_data_dir(info);
 	std::error_code ec;
 	std::filesystem::remove_all({path}, ec);
 	if (ec) {
 		throw std::runtime_error("failed to clear hotstuff block dir");
 	}
 
-	path = hotstuff_index_lmdb_dir();
+	path = hotstuff_index_lmdb_dir(info);
 	std::filesystem::remove_all({path}, ec);
 	if (ec) {
 		throw std::runtime_error("failed to clear hotstuff index lmdb dir");
 	}
 }
 
-void clear_all_data_dirs() {
-	clear_hotstuff_dirs();
+void clear_all_data_dirs(const ReplicaInfo& info) {
+	clear_hotstuff_dirs(info);
 }
 
-void make_all_data_dirs() {
-	make_hotstuff_dirs();
+void make_all_data_dirs(const ReplicaInfo& info) {
+	make_hotstuff_dirs(info);
 }
 
 } /* speedex */

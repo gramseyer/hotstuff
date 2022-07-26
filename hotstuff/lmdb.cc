@@ -4,6 +4,8 @@
 
 #include "hotstuff/manage_data_dirs.h"
 
+#include "hotstuff/config/replica_config.h"
+
 namespace hotstuff {
 
 using lmdb::dbval;
@@ -11,7 +13,8 @@ using lmdb::dbval;
 void
 HotstuffLMDB::open_env()
 {
-	std::string lmdb_folder = hotstuff_index_lmdb_dir();
+	make_all_data_dirs(info);
+	std::string lmdb_folder = hotstuff_index_lmdb_dir(info);
 	LMDBInstance::open_env(lmdb_folder);
 }
 

@@ -148,7 +148,7 @@ HotstuffAppBase::reload_decided_blocks() {
 		for (auto [_, hash] : cursor)
 		{
 			HOTSTUFF_INFO("LOADING: block hash %s", debug::hash_to_str(hash).c_str());
-			block_ptr_t blk = HotstuffBlock::load_decided_block(hash);
+			block_ptr_t blk = HotstuffBlock::load_decided_block(hash, config.get_info(self_id));
 			auto res = block_store.insert_block(blk);
 			if (res) {
 				throw std::runtime_error("unable to properly load data into block store");

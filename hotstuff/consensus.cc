@@ -2,6 +2,7 @@
 
 #include "hotstuff/hotstuff_debug_macros.h"
 #include "utils/debug_utils.h"
+#include "hotstuff/manage_data_dirs.h"
 
 namespace hotstuff {
 
@@ -14,8 +15,10 @@ HotstuffCore::HotstuffCore(const ReplicaConfig& config, ReplicaID self_id)
 	, self_id(self_id)
 	, config(config)
 	, b_leaf(genesis_block)
-	, decided_hash_index()
-	{}
+	, decided_hash_index(config.get_info(self_id))
+	{
+		make_all_data_dirs(config.get_info(self_id));
+	}
 
 //qc_block is the block pointed to by qc
 void
@@ -62,7 +65,7 @@ HotstuffCore::update(const block_ptr_t& nblk) {
     if (blk1->get_height() > b_lock->get_height()) b_lock = blk1;
 
     //TODO threadpool or async worker to do writing in background
-    b_lock -> write_to_disk();
+    b_lock -> write_to_disk(config.get_info(self_id));
 
     const auto blk = blk1->get_justify();
     if (blk == nullptr) return;

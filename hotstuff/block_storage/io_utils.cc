@@ -4,7 +4,7 @@
 #include "hotstuff/crypto/hash.h"
 #include "utils/save_load_xdr.h"
 
-#include "config.h"
+#include "hotstuff/manage_data_dirs.h"
 
 #include <iomanip>
 #include <sstream>
@@ -12,13 +12,6 @@
 namespace hotstuff {
 
 //std::string storage_folder = std::string(ROOT_DB_DIRECTORY) + std::string(HOTSTUFF_BLOCKS);
-
-void
-make_block_folder() {
-	throw std::runtime_error("unimpl");
-	//utils::mkdir_safe(storage_folder.c_str());
-}
-
 
 std::string 
 array_to_str(Hash const& hash) {
@@ -31,26 +24,25 @@ array_to_str(Hash const& hash) {
 }
 
 std::string
-block_filename(const HotstuffBlockWire& block)
+block_filename(const HotstuffBlockWire& block, const ReplicaInfo& info)
 {
 	auto const& header = block.header;
 
 	auto header_hash = hash_xdr(header);
 
-	return block_filename(header_hash);
+	return block_filename(header_hash, info);
 }
 
 std::string
-block_filename(const Hash& header_hash)
+block_filename(const Hash& header_hash, const ReplicaInfo& info)
 {
 	auto strname = array_to_str(header_hash);
-	throw std::runtime_error("unimpl");
 
-	//return storage_folder + strname + std::string(".block");
+	return hotstuff_block_data_dir(info) + strname + std::string(".block");
 }
 
-void save_block(const HotstuffBlockWire& block) {
-	auto filename = block_filename(block);
+void save_block(const HotstuffBlockWire& block, const ReplicaInfo& info) {
+	auto filename = block_filename(block, info);
 
 	if (utils::save_xdr_to_file(block, filename.c_str()))
 	{
@@ -59,9 +51,9 @@ void save_block(const HotstuffBlockWire& block) {
 }
 
 std::optional<HotstuffBlockWire> 
-load_block(const Hash& req_header_hash)
+load_block(const Hash& req_header_hash, const ReplicaInfo& info)
 {
-	auto filename = block_filename(req_header_hash);
+	auto filename = block_filename(req_header_hash, info);
 
 	HotstuffBlockWire block;
 	if (utils::load_xdr_from_file(block, filename.c_str()))

@@ -16,6 +16,7 @@
 namespace hotstuff {
 
 class HotstuffBlock;
+class ReplicaInfo;
 
 using block_ptr_t = std::shared_ptr<HotstuffBlock>;	
 
@@ -161,7 +162,7 @@ public:
 	void set_parent(block_ptr_t parent_block);
 	void set_justify(block_ptr_t justify_block);
 
-	void write_to_disk();
+	void write_to_disk(const ReplicaInfo& info);
 
 	void flush_from_memory();
 
@@ -187,7 +188,8 @@ public:
 
 	static block_ptr_t
 	load_decided_block(
-		Hash const& hash); 
+		Hash const& hash,
+		ReplicaInfo const& info); 
 };
 
 } /* hotstuff */

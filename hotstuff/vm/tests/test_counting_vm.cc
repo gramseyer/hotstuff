@@ -13,11 +13,11 @@ namespace hotstuff
 
 TEST_CASE("single replica", "[vm]")
 {
-	clear_all_data_dirs();
-	make_all_data_dirs();
-
 	auto [pk, sk] = deterministic_keypair_from_uint64(1);
-	ReplicaInfo r1(0, pk, "localhost", "9000", "9001");
+	ReplicaInfo r1(0, pk, "localhost", "9000", "9001", "test_data_folder/");
+
+	clear_all_data_dirs(r1);
+	make_all_data_dirs(r1);
 
 	ReplicaConfig config;
 	config.add_replica(r1);
