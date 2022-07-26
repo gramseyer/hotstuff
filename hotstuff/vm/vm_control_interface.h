@@ -7,8 +7,6 @@
 #include <mutex>
 #include <vector>
 
-#include <xdrpp/types.h>
-
 namespace hotstuff {
 
 class HotstuffLMDB;

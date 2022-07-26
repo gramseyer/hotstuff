@@ -131,7 +131,7 @@ public:
 
 namespace detail
 {
-Hash
+static Hash
 get_hash_from_lmdb_value(const std::vector<uint8_t>& value_bytes)
 {
 	Hash hash;
