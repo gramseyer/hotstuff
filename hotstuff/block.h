@@ -33,7 +33,7 @@ class HotstuffBlock {
 	HotstuffBlockWire wire_block;
 
 	//genesis_block lacks this
-	std::optional<QuorumCertificate> parsed_qc;
+	const std::optional<QuorumCertificate> parsed_qc;
 
 	ReplicaID proposer;  //0 (starting proposer) for genesis block
 

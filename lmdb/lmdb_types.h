@@ -16,8 +16,6 @@
 
 #include <lmdb.h>
 
-#include <xdrpp/marshal.h>
-
 #include "utils/cleanup.h"
 
 namespace lmdb {
@@ -78,13 +76,6 @@ struct dbuint {
   explicit dbuint(size_t v) : val_(v) {}
   operator dbval() const { return dbval{val_}; }
 };
-
-//! Convert dbval to xdr
-template<typename xdr_type>
-void dbval_to_xdr(const dbval& d, xdr_type& value) {
-  auto bytes = d.bytes();
-  xdr::xdr_from_opaque(bytes, value);
-}
 
 //! self closing lmdb env
 struct dbenv : utils::unique_destructor_t<mdb_env_close> {

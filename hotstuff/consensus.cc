@@ -166,10 +166,10 @@ HotstuffCore::on_receive_proposal(block_ptr_t bnew, ReplicaID proposer)
 void
 HotstuffCore::reload_state_from_index()
 {
-	auto highest_qc_wire = decided_hash_index.get_highest_qc();
-	auto highest_block_ptr = find_block_by_hash(highest_qc_wire.justify);
+	QuorumCertificate highest_qc = decided_hash_index.get_highest_qc();
+	auto highest_block_ptr = find_block_by_hash(highest_qc.get_obj_hash()); // returns highest_qc.justify
 	//sets all the relevant state vars except for vheight, b_exec, and b_lock
-	update_hqc(highest_block_ptr, highest_qc_wire);
+	update_hqc(highest_block_ptr, highest_qc);
 
 	vheight = highest_block_ptr->get_height();
 	b_exec = highest_block_ptr;

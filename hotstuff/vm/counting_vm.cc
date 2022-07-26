@@ -4,16 +4,6 @@
 
 namespace hotstuff {
 
-/*
-CountingVMBlockID::CountingVMBlockID(std::vector<uint8_t> const& bytes) 
-	: value(std::nullopt)
-{
-	if (bytes.size() > 0) {
-		value = std::make_optional<uint64_t>();
-		xdr::xdr_from_opaque(bytes, *value);
-	}
-} */
-
 void 
 CountingVM::init_from_disk(HotstuffLMDB const& lmdb) {
 	auto cursor = lmdb.forward_cursor();

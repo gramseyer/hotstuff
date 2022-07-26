@@ -1,6 +1,5 @@
 #include "hotstuff/lmdb.h"
 
-
 #include "utils/serialize_big_endian.h"
 
 namespace hotstuff {
@@ -16,18 +15,20 @@ HotstuffLMDB::cursor::iterator::operator*() {
 	auto k_bytes = k.bytes();
 	utils::read_unsigned_big_endian(k_bytes, key_parsed);
 
-	Hash hash;
-	std::vector<uint8_t> hash_bytes;
 	auto value_bytes = v.bytes();
-	hash_bytes.insert(hash_bytes.end(), value_bytes.begin(), value_bytes.begin() + hash.size());
-	xdr::xdr_from_opaque(hash_bytes, hash);
+
+	Hash hash = detail::get_hash_from_lmdb_value(value_bytes);
+
+	//hash_bytes.insert(hash_bytes.end(), value_bytes.begin(), value_bytes.begin() + hash.size());
+	//xdr::xdr_from_opaque(hash_bytes, hash);
 
 	return {key_parsed, hash};
 }
 
 
 HotstuffLMDB::txn 
-HotstuffLMDB::open_txn() {
+HotstuffLMDB::open_txn()
+{
 	return txn(wbegin(), get_data_dbi(), get_metadata_dbi());
 }
 
@@ -76,14 +77,12 @@ HotstuffLMDB::get_decided_hash_id_pair_(uint64_t height) const {
 		return std::nullopt;
 	}
 
-	Hash hash;
-
 	std::vector<uint8_t> hash_bytes;
 
 	auto value_bytes = value -> bytes();
 
-	hash_bytes.insert(hash_bytes.end(), value_bytes.begin(), value_bytes.begin() + hash.size());
-	xdr::xdr_from_opaque(hash_bytes, hash);
+	Hash hash = detail::get_hash_from_lmdb_value(value_bytes);
+
 	return {{hash, value_bytes}};
 }
 
@@ -98,7 +97,7 @@ HotstuffLMDB::txn::set_qc_on_top_block(QuorumCertificate const& qc) {
 	tx.put(meta_dbi, &qc_key, &qc_dbval);
 }
 
-QuorumCertificateWire 
+QuorumCertificate
 HotstuffLMDB::get_highest_qc() const {
 	auto rtxn = rbegin();
 	auto value = rtxn.get(get_metadata_dbi(), dbval{"qc"});
@@ -108,7 +107,7 @@ HotstuffLMDB::get_highest_qc() const {
 
 	QuorumCertificateWire out;
 	xdr::xdr_from_opaque(value -> bytes(), out);
-	return out;
+	return QuorumCertificate(out);
 }
 
 } /* hotstuff */

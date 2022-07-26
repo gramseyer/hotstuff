@@ -51,7 +51,7 @@ class QuorumCertificate {
 
 public:
 
-    QuorumCertificate(const Hash& obj_hash);
+    explicit QuorumCertificate(const Hash& obj_hash);
     QuorumCertificate(QuorumCertificateWire const& qc_wire);
 
     //! for building a QC from PCs.

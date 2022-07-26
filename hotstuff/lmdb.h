@@ -15,6 +15,14 @@ namespace hotstuff {
 
 class QuorumCertificate;
 
+/**
+ * Stored value is <key = decided hotstuff height, value = (block hash, block id)>
+ * This isn't fully stop-restart fault tolerant - crashing + reloading might
+ * allow a replica to double-vote, so nodes should wait to be leader until consensus is
+ * achieved on a new block.
+ * We store the highest seen QC so that we can propose new blocks and trace back a new QC
+ * from an updated QC (without tracing back to genesis).
+ */
 class HotstuffLMDB : private lmdb::LMDBInstance {
 
 	constexpr static auto DB_NAME = "hotstuff";
@@ -65,7 +73,7 @@ public:
 	txn open_txn();
 	void commit(txn& tx);
 
-	QuorumCertificateWire get_highest_qc() const;
+	QuorumCertificate get_highest_qc() const;
 
 	class cursor {
 
@@ -121,6 +129,25 @@ public:
 	static load_vm_block(Hash const& hash);
 };
 
+namespace detail
+{
+Hash
+get_hash_from_lmdb_value(const std::vector<uint8_t>& value_bytes)
+{
+	Hash hash;
+	if (value_bytes.size() < hash.size())
+	{
+		throw std::runtime_error("invalid bytes length from lmdb");
+	}
+	memcpy(hash.data(), value_bytes.data(), hash.size());
+	//hash.insert(hash.end(), value_bytes.begin(), value_bytes.begin() + hash.size());
+	static_assert(hash.size() == 32, "hash size incorrect");
+
+	return hash;
+}
+
+} /* detail */
+
 template<typename vm_block_id>
 void 
 HotstuffLMDB::txn::add_decided_block(block_ptr_t blk, vm_block_id const& id)
@@ -143,11 +170,11 @@ std::pair<Hash, vm_block_id>
 HotstuffLMDB::cursor::iterator::get_hs_hash_and_vm_data() {
 	auto const& [_, v] = *it;
 
-	Hash hash;
-	std::vector<uint8_t> hash_bytes;
 	auto value_bytes = v.bytes();
-	hash_bytes.insert(hash_bytes.end(), value_bytes.begin(), value_bytes.begin() + hash.size());
-	xdr::xdr_from_opaque(hash_bytes, hash);
+
+	Hash hash = detail::get_hash_from_lmdb_value(value_bytes);
+	//hash_bytes.insert(hash_bytes.end(), value_bytes.begin(), value_bytes.begin() + hash.size());
+	//xdr::xdr_from_opaque(hash_bytes, hash);
 
 	std::vector<uint8_t> block_id_bytes;
 	block_id_bytes.insert(block_id_bytes.end(), value_bytes.begin() + hash.size(), value_bytes.end());

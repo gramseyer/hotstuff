@@ -79,10 +79,9 @@ Recovery after disk loss not implemented.
 
 # TODO
 
-This implementation needs e2e tests and examples. There are almost no unit tests.
-Was manually tested carefully during development -- but this implementation
+This implementation
 should not be used in production or for a safety-critical system, at least 
-not until the implementation can be more thoroughly tested and audited.
+not until the implementation can be more thoroughly audited.
 
 # History
 
