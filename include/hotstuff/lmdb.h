@@ -1,15 +1,14 @@
 #pragma once
 
-#include "config.h"
-
 #include "hotstuff/block.h"
-
-#include "hotstuff/block_storage/io_utils.h"
 
 #include "lmdb/lmdb_types.h"
 #include "lmdb/lmdb_wrapper.h"
 
 #include "hotstuff/xdr/types.h"
+#include "hotstuff/block_storage/io_utils.h"
+
+#include <xdrpp/marshal.h>
 
 namespace hotstuff {
 

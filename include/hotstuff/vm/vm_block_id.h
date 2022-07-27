@@ -12,6 +12,34 @@ using xdr::operator==;
 namespace hotstuff
 {
 
+/*
+struct VMBlockID
+{
+	std::optional<std::vector<uint8_t>> value;
+
+	VMBlockID() : value(std::nullopt) {}
+
+	VMBlockID(std::vector<uint8_t> const& bytes)
+		: value(bytes)
+		{}
+
+
+	bool operator==(const VMBlockID&) const = default;
+
+	std::vector<uint8_t>
+	serialize() const {
+		if (!value) {
+			return {};
+		}
+		return value;
+	}
+
+	operator bool() const {
+		return value.has_value();
+	}
+}; */
+
+
 template<typename block_id>
 struct VMBlockID {
 	std::optional<block_id> value;
@@ -22,9 +50,12 @@ struct VMBlockID {
 	VMBlockID(std::vector<uint8_t> const& bytes)
 		: value(std::nullopt)
 	{
-		if (bytes.size() > 0) {
+		try {
 			value = std::make_optional<block_id>();
 			xdr::xdr_from_opaque(bytes, *value);
+		} catch(...)
+		{
+			value = std::nullopt;
 		}
 	}
 
