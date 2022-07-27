@@ -1,6 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include "examples/vm/counting_vm.h"
+#include "hotstuff/hotstuff_app.h"
 
 #include "hotstuff/config/replica_config.h"
 #include "hotstuff/crypto/crypto_utils.h"
@@ -13,6 +14,7 @@ namespace hotstuff
 
 TEST_CASE("single replica", "[vm]")
 {
+	std::printf("start test\n");
 	auto [pk, sk] = deterministic_keypair_from_uint64(1);
 	ReplicaInfo r1(0, pk, "localhost", "9000", "9001", "test_data_folder/");
 
@@ -26,13 +28,15 @@ TEST_CASE("single replica", "[vm]")
 
 	auto vm = std::make_shared<CountingVM>();
 
-	HotstuffApp app(config, r1.id, sk, vm);
-	app.init_clean();
+	auto app = make_speculative_hotstuff_instance(config, r1.id, sk, vm);
+	//HotstuffApp app(config, r1.id, sk, vm);
+	app->init_clean();
 
 	PaceMakerWaitQC pmaker(app);
 	pmaker.set_self_as_proposer();
-	app.put_vm_in_proposer_mode();
+	app->put_vm_in_proposer_mode();
 
+	std::printf("done init\n");
 	SECTION("5 proposes")
 	{
 		for (size_t i = 0; i < 5; i++)
@@ -48,6 +52,7 @@ TEST_CASE("single replica", "[vm]")
 		// which is 2 ahead of last committed.
 		REQUIRE(vm->get_speculative_height() == 5);
 	}
+	std::printf("start second section\n");
 
 	SECTION("8 proposes")
 	{
@@ -60,7 +65,6 @@ TEST_CASE("single replica", "[vm]")
 		REQUIRE(vm->get_last_committed_height() == 2);
 		REQUIRE(vm->get_speculative_height() == 8);
 	}
-
 }
 
 

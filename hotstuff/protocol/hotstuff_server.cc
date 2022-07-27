@@ -32,16 +32,18 @@ HotstuffProtocolServer::HotstuffProtocolServer(NetworkEventQueue& queue, const R
 	: handler(queue, config)
 	, ps()
 	, protocol_listener(
-		ps, 
-		xdr::tcp_listen(
-			config.get_info(self_id).get_service_name(ReplicaService::PROTOCOL_SERVICE), 
-			AF_INET), 
-		false, 
-		xdr::session_allocator<void>())
+		std::make_unique<xdr::srpc_tcp_listener<>>(
+			ps, 
+			xdr::tcp_listen(
+				config.get_info(self_id).get_service_name(ReplicaService::PROTOCOL_SERVICE), 
+				AF_INET), 
+			false, 
+			xdr::session_allocator<void>()))
 	{
-		protocol_listener.register_service(handler);
+		protocol_listener->register_service(handler);
 		
-		std::thread([this] {ps.run();}).detach();
+			std::thread([this] {
+				ps.run();
+			}).detach();
 	}
-
 } /* hotstuff */

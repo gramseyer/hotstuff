@@ -13,6 +13,7 @@
 #include "hotstuff/vm/hotstuff_vm_bridge.h"
 #include "hotstuff/vm/nonspeculative_vm_bridge.h"
 #include "hotstuff/xdr/types.h"
+#include "hotstuff/hotstuff_app.h"
 
 #include <xdrpp/types.h>
 
@@ -58,24 +59,24 @@ public:
 
 	//! Propose new block.
 	//! Block hash returned (for input to wait_for_new_qc)
-	Hash do_propose();
+	Hash do_propose() override final;
 	//! Propose an empty block.
-	Hash do_empty_propose();
+	Hash do_empty_propose() override final;
 
 	//! wait for new quorum cert.
 	//! return true is the new QC is on the
 	//! expected input hash.
-	bool wait_for_new_qc(Hash const& expected_next_qc);
-	void cancel_wait_for_new_qc();
+	bool wait_for_new_qc(Hash const& expected_next_qc) override final;
+	void cancel_wait_for_new_qc() override final;
 
 };
 
 class HotstuffLMDB;
 
-template<typename VMType>
+//template<typename VMType>
 class HotstuffApp : public HotstuffAppBase {
 
-	HotstuffVMBridge<VMType> vm_bridge;
+	HotstuffVMBridge vm_bridge;
 
 	xdr::opaque_vec<> 
 	get_next_vm_block(bool nonempty_proposal, uint64_t hotstuff_height) override final {
@@ -99,38 +100,41 @@ class HotstuffApp : public HotstuffAppBase {
 
 public:
 
-	HotstuffApp(const ReplicaConfig& config, ReplicaID self_id, SecretKey sk, std::shared_ptr<VMType> vm)
+	HotstuffApp(const ReplicaConfig& config, ReplicaID self_id, SecretKey sk, std::shared_ptr<VMBase> vm)
 		: HotstuffAppBase(config, self_id, sk)
 		, vm_bridge(vm)
 		{}
 
-	void init_clean() {
+	void init_clean() override final {
 		decided_hash_index.create_db();
 		vm_bridge.init_clean();
 	}
 
-	void init_from_disk() {
+	void init_from_disk() override final {
 		decided_hash_index.open_db();
 		uint64_t highest_decision_height = reload_decided_blocks();
 		vm_bridge.init_from_disk(decided_hash_index, highest_decision_height);
 	}
 
-	void put_vm_in_proposer_mode() {
+	void put_vm_in_proposer_mode() override final {
 		vm_bridge.put_vm_in_proposer_mode();
 	}
 
-	bool proposal_buffer_is_empty() const {
+	bool proposal_buffer_is_empty() const override final {
 		return vm_bridge.proposal_buffer_is_empty();
 	}
-	void stop_proposals() {
+	void stop_proposals() override final {
 		vm_bridge.stop_proposals();
-	}	
-};
+	}
 
-template<typename VMType>
+	~HotstuffApp() override final
+	{}
+};
+/*
+//template<typename VMType>
 class NonspeculativeHotstuffApp : public HotstuffAppBase {
 
-	NonspeculativeVMBridge<VMType> vm_bridge;
+	NonspeculativeVMBridge<VMBase> vm_bridge;
 
 	xdr::opaque_vec<> 
 	get_next_vm_block(bool nonempty_proposal, uint64_t hotstuff_height) override final {
@@ -154,7 +158,7 @@ class NonspeculativeHotstuffApp : public HotstuffAppBase {
 
 public:
 
-	NonspeculativeHotstuffApp(const ReplicaConfig& config, ReplicaID self_id, SecretKey sk, std::shared_ptr<VMType> vm)
+	NonspeculativeHotstuffApp(const ReplicaConfig& config, ReplicaID self_id, SecretKey sk, std::shared_ptr<VMBase> vm)
 		: HotstuffAppBase(config, self_id, sk)
 		, vm_bridge(vm)
 		{}
@@ -179,7 +183,7 @@ public:
 	{
 		vm_bridge.add_proposal(std::move(proposal));
 	}
-};
+}; */
 
 
 } /* hotstuff */

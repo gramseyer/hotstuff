@@ -24,11 +24,13 @@
 #include "hotstuff/crypto/certs.h"
 #include "hotstuff/lmdb.h"
 
+#include "hotstuff/hotstuff_app.h"
+
 #include <mutex>
 
 namespace hotstuff {
 
-class HotstuffCore {
+class HotstuffCore : public Hotstuff {
     block_ptr_t genesis_block;                              /** the genesis block */
     /* === state variables === */
     /** block containing the QC for the highest block having one */
@@ -67,7 +69,7 @@ public:
 
 	HotstuffCore(const ReplicaConfig& config, ReplicaID self_id);
 
-	const ReplicaConfig& get_config() {
+	const ReplicaConfig& get_config() override final {
 		return config;
 	}
 
@@ -81,13 +83,13 @@ public:
 	on_receive_proposal(block_ptr_t bnew, ReplicaID proposer);
 
 	ReplicaID 
-	get_last_proposer() const {
+	get_last_proposer() const override final {
 		std::lock_guard lock(proposal_mutex);
 		return hqc.first -> get_proposer();
 	}
 
 	ReplicaID 
-	get_self_id() const {
+	get_self_id() const override final {
 		return self_id;
 	}
 

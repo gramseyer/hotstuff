@@ -39,7 +39,7 @@ namespace hotstuff {
  */
 class PaceMakerWaitQC {
 
-    HotstuffAppBase& hotstuff_app;
+    Hotstuff& hotstuff_app;
 
     Hash expected_hash;
 
@@ -52,10 +52,10 @@ class PaceMakerWaitQC {
 
 public:
 
-    PaceMakerWaitQC(HotstuffAppBase& hotstuff_app)
-        : hotstuff_app(hotstuff_app)
+    PaceMakerWaitQC(std::unique_ptr<Hotstuff>& hotstuff_app)
+        : hotstuff_app(*hotstuff_app)
         , expected_hash()
-        , proposer(hotstuff_app.get_last_proposer()) // get genesis proposer
+        , proposer(hotstuff_app->get_last_proposer()) // get genesis proposer
         {}
 
     void wait_for_qc() {

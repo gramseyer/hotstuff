@@ -12,7 +12,6 @@ using xdr::operator==;
 namespace hotstuff
 {
 
-/*
 struct VMBlockID
 {
 	std::optional<std::vector<uint8_t>> value;
@@ -23,7 +22,6 @@ struct VMBlockID
 		: value(bytes)
 		{}
 
-
 	bool operator==(const VMBlockID&) const = default;
 
 	std::vector<uint8_t>
@@ -31,15 +29,15 @@ struct VMBlockID
 		if (!value) {
 			return {};
 		}
-		return value;
+		return *value;
 	}
 
 	operator bool() const {
 		return value.has_value();
 	}
-}; */
+}; 
 
-
+/*
 template<typename block_id>
 struct VMBlockID {
 	std::optional<block_id> value;
@@ -72,6 +70,6 @@ struct VMBlockID {
 	operator bool() const {
 		return value.has_value();
 	}
-};
+}; */
 
 } /* hotstuff */

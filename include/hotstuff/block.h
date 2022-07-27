@@ -124,6 +124,11 @@ public:
 		return parsed_block_body;
 	}
 
+	xdr::opaque_vec<> const&
+	get_wire_body() const{
+		return wire_block.body;
+	}
+
 	const Hash& 
 	get_hash() const {
 		return self_qc.get_obj_hash();

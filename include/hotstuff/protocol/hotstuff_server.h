@@ -37,7 +37,7 @@ class HotstuffProtocolServer {
 	HotstuffProtocolHandler handler;
 	xdr::pollset ps;
 
-	xdr::srpc_tcp_listener<> protocol_listener;
+	std::unique_ptr<xdr::srpc_tcp_listener<>> protocol_listener;
 
 public:
 

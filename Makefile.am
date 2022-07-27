@@ -36,13 +36,15 @@ HOTSTUFF_SRCS = \
 	hotstuff/event.cc \
 	hotstuff/event_queue.cc \
 	hotstuff/hotstuff.cc \
+	hotstuff/hotstuff_app.cc \
 	hotstuff/lmdb.cc \
 	hotstuff/manage_data_dirs.cc \
 	hotstuff/network_event.cc \
 	hotstuff/network_event_queue.cc \
 	hotstuff/protocol/hotstuff_protocol_client.cc \
 	hotstuff/protocol/hotstuff_protocol_manager.cc \
-	hotstuff/protocol/hotstuff_server.cc
+	hotstuff/protocol/hotstuff_server.cc \
+	hotstuff/vm/vm_control_interface.cc
 
 EXAMPLES_SRCS = \
 	examples/vm/counting_vm.cc 

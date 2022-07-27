@@ -10,6 +10,7 @@
 
 #include "hotstuff/vm/speculative_exec_gadget.h"
 #include "hotstuff/vm/vm_control_interface.h"
+#include "hotstuff/vm/vm_base.h"
 
 namespace hotstuff {
 
@@ -38,15 +39,17 @@ namespace hotstuff {
  * In theory, one could make these two processes separate (and the initial plan was to do so)
  * but that separation makes speculation tracking much more complicated and error-prone.
  */
-template<typename VMType>
+
+//template<typename VMType>
 class HotstuffVMBridge {
 
-	using vm_block_id = typename VMType::block_id;
-	using vm_block_type = typename VMType::block_type;
+	using vm_block_id = VMBlockID;//typename VMType::block_id;
+	using vm_block_type = VMBlock; //typename VMType::block_type;
 
 	SpeculativeExecGadget<vm_block_id> speculation_map;
 
-	VMControlInterface<VMType> vm_interface;
+	std::shared_ptr<VMBase> vm;
+	VMControlInterface vm_interface;
 
 	bool initialized;
 
@@ -59,11 +62,12 @@ class HotstuffVMBridge {
 	//! map block_type to block_id, considering the fact
 	//! that the input block might be null
 	//! (in which case, this returns a default, null_id value).
-	vm_block_id get_block_id(std::unique_ptr<vm_block_type> const& blk) {
+	static vm_block_id 
+	get_block_id(std::unique_ptr<vm_block_type> const& blk) {
 		if (blk) {
-			return VMType::nonempty_block_id(*blk);
+			return VMBase::nonempty_block_id(*blk);
 		}
-		return VMType::empty_block_id();
+		return VMBase::empty_block_id();
 	}
 
 	void init_guard() const {
@@ -74,8 +78,9 @@ class HotstuffVMBridge {
 
 public:
 
-	HotstuffVMBridge(std::shared_ptr<VMType> vm)
+	HotstuffVMBridge(std::shared_ptr<VMBase> vm)
 		: speculation_map()
+		, vm(vm)
 		, vm_interface(vm)
 		, initialized(false)
 		{}
@@ -101,7 +106,7 @@ public:
 		init_guard();
 		auto lock = speculation_map.lock();
 		VM_BRIDGE_INFO("made empty proposal at height %lu", proposal_height);
-		speculation_map.add_height_pair(proposal_height, VMType::empty_block_id());
+		speculation_map.add_height_pair(proposal_height, VMBase::empty_block_id());
 		return xdr::opaque_vec<>();
 	}
 	
@@ -117,12 +122,12 @@ public:
 		auto proposal = vm_interface.get_proposal();
 		if (proposal == nullptr) {
 			VM_BRIDGE_INFO("try make nonempty, got empty proposal at height %lu", proposal_height);
-			speculation_map.add_height_pair(proposal_height, VMType::empty_block_id());
+			speculation_map.add_height_pair(proposal_height, VMBase::empty_block_id());
 			return xdr::opaque_vec<>();
 		}
 		VM_BRIDGE_INFO("made nonempty proposal at height %lu", proposal_height);
-		speculation_map.add_height_pair(proposal_height, VMType::nonempty_block_id(*proposal));
-		return xdr::xdr_to_opaque(*proposal);
+		speculation_map.add_height_pair(proposal_height, VMBase::nonempty_block_id(*proposal));
+		return proposal -> serialize();// xdr::xdr_to_opaque(*proposal);
 	}
 
 	//! Apply a block to the state machine.
@@ -139,8 +144,10 @@ public:
 		init_guard();
 
 		auto lock = speculation_map.lock();
+
+		std::unique_ptr<vm_block_type> blk_value = vm -> try_parse(blk -> get_wire_body());
 		
-		auto blk_value = blk -> template try_vm_parse<vm_block_type>();
+		//auto blk_value = blk -> template try_vm_parse<vm_block_type>();
 		auto blk_id = get_block_id(blk_value);
 
 		txn.add_decided_block(blk, blk_id);

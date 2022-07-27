@@ -188,10 +188,12 @@ HotstuffLMDB::load_vm_block(Hash const& hash) const
 	if (!unparsed_opt) {
 		throw std::runtime_error("failed to load expected block");
 	}
-	vm_block_type out;
 
-	xdr::xdr_from_opaque((*unparsed_opt).body, out);
-	return out;
+	return vm_block_type((*unparsed_opt).body);
+	//vm_block_type out;
+
+	//xdr::xdr_from_opaque((*unparsed_opt).body, out);
+//	return out;
 }
 
 } /* hotstuff */

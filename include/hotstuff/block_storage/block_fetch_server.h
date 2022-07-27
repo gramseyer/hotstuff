@@ -31,7 +31,7 @@ class BlockFetchServer {
 	BlockFetchHandler handler;
 
 	xdr::pollset ps;
-	xdr::srpc_tcp_listener<> fetch_listener;
+	std::unique_ptr<xdr::srpc_tcp_listener<>> fetch_listener;
 
 public:
 
