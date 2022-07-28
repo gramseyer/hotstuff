@@ -60,7 +60,7 @@ have to rollback).  A continuously rotating leader could be implemented naively 
 `do_propose`, although if such behavior is desired, more direct interaction with the speculation on the state machine is likely
 desirable.
 
-`hotstuff/vm/tests/test_counting_vm.cc` gives a simple usage example with one replica.
+`examples/vm/tests/test_counting_vm.cc` gives a simple usage example with one replica.
 
 # Integration
 
@@ -88,7 +88,23 @@ not until the implementation can be more thoroughly audited.
 I wrote this for my SPEEDEX implementation, and pulled this code out of there
 so as to have a standalone implementation.
 
-I have not yet configured autotools to behave properly with this package when included
-as a submodule (or set up integration with any kind of package system).  Files might
-get rearranged if/when I adjust the package format.
+Now should work with autotools as either an installed package (`./autogen.sh && ./configure && make && make install`)
+or as a git submodule.  
+
+To use as a git submodule with xdrpp defined in a separately included git submodule,
+the main configure script needs the following:
+```
+ABS_TOP_DIR=$ac_pwd
+export ABS_TOP_DIR
+
+export xdrpp_INTERNAL
+
+global_xdrpp_CFLAGS=$xdrpp_CFLAGS
+global_xdrpp_LIBS=$xdrpp_LIBS
+global_XDRC=$XDRC
+
+export global_xdrpp_CFLAGS
+export global_xdrpp_LIBS
+export global_XDRC
+```
 
