@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include "hotstuff/hotstuff.h"
+#include "hotstuff/hotstuff_app.h"
 
 namespace hotstuff {
 

@@ -2,8 +2,6 @@ ACLOCAL_AMFLAGS = -I m4
 
 SUBDIRS = $(PKGCONFIG_SUBDIRS)
 
-CLEANFILES = *~ .*~
-
 abs_top_srcdir=@r_abs_top_srcdir@
 abs_top_builddir=@r_abs_top_builddir@
 top_srcdir=@r_top_srcdir@
@@ -20,6 +18,27 @@ BUILT_SOURCES = $(XH_FILES)
 # main srcs
 
 lib_LIBRARIES = libhotstuff.a
+
+pkginclude_HEADERS = include/hotstuff/config/replica_config.h \
+	include/hotstuff/crypto/crypto_utils.h \
+	include/hotstuff/hotstuff_app.h \
+	include/hotstuff/hotstuff_debug_macros.h \
+	include/hotstuff/liveness.h \
+	include/hotstuff/log_access_wrapper.h \
+	include/hotstuff/manage_data_dirs.h \
+	include/hotstuff/vm/vm_base.h \
+	include/hotstuff/vm/vm_block_id.h \
+	include/hotstuff/xdr/types.h 
+
+EXTRA_DIST = \
+	.gitignore \
+	autogen.sh \
+	include/hotstuff/xdr/types.x
+
+CLEANFILES = *~ */*~ */*/*~ .gitignore~ include/hotstuff/xdr/types.h
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = hotstuff.pc
 
 HOTSTUFF_SRCS = \
 	hotstuff/block.cc \
@@ -92,12 +111,12 @@ $(TEST_SRCS:.cc=.o) : CXXFLAGS += $(Catch2_CFLAGS)
 
 main/test.o : CXXFLAGS += $(Catch2_CFLAGS)
 
-bin_PROGRAMS = \
-	test
-
 test_SOURCES = $(SRCS) $(EXTRA_SRCS) main/test.cc
 
 test_LDFLAGS = $(Catch2_LIBS)
+
+check_PROGRAMS = test
+TESTS = test
 
 #building x files
 $(XH_FILES) : $(XDRC)
