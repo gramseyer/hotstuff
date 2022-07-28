@@ -65,4 +65,7 @@ public:
 std::unique_ptr<Hotstuff>
 make_speculative_hotstuff_instance(const ReplicaConfig& config, ReplicaID self_id, SecretKey sk, std::shared_ptr<VMBase> vm);
 
+std::unique_ptr<Hotstuff>
+make_nonspeculative_hotstuff_instance(const ReplicaConfig& config, ReplicaID self_id, SecretKey sk, std::shared_ptr<VMBase> vm);
+
 } /* hotstuff */
