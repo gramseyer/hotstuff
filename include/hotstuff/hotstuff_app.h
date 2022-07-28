@@ -9,19 +9,39 @@ class VMBase;
 
 class Hotstuff
 {
+	[[noreturn]]
+	void unimplemented() const
+	{
+		throw std::runtime_error("unimplemented");
+	}
 
 public:
 
 	virtual void init_clean() = 0;
 	virtual void init_from_disk() = 0;
-	virtual void put_vm_in_proposer_mode() = 0;
+	virtual void put_vm_in_proposer_mode() {
+		unimplemented();
+	}
 
 	virtual bool proposal_buffer_is_empty() const = 0;
-	virtual void stop_proposals() = 0;
+	virtual void stop_proposals() 
+	{
+		unimplemented();
+	}
 
-	virtual Hash do_propose() = 0;
+	virtual Hash do_propose() {
+		unimplemented();
+	}
 	//! Propose an empty block.
-	virtual Hash do_empty_propose() = 0;
+	virtual Hash do_empty_propose() {
+		unimplemented();
+	}
+
+	virtual void
+	add_proposal(xdr::opaque_vec<>&& proposal) 
+	{
+		unimplemented();
+	}
 
 	//! wait for new quorum cert.
 	//! return true is the new QC is on the

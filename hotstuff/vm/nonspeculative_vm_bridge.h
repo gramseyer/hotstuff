@@ -32,20 +32,19 @@ namespace hotstuff {
  * In theory, one could make these two processes separate (and the initial plan was to do so)
  * but that separation makes speculation tracking much more complicated and error-prone.
  */
-template<typename VMType>
 class NonspeculativeVMBridge {
 
-	using vm_block_id = typename VMType::block_id;
-	using vm_block_type = typename VMType::block_type;
+	using vm_block_id = VMBlockID;//typename VMType::block_id;
+	using vm_block_type = VMBlock; //typename VMType::block_type;
 
 	//TODO: rewrite with a non-speculative version of control interface
 	// cut out some of the extra code, essentially
 	//VMControlInterface<VMType> vm_interface;
-	std::shared_ptr<VMType> vm;
+	std::shared_ptr<VMBase> vm;
 	
 	bool initialized;
 
-	std::mutex mtx;
+	mutable std::mutex mtx;
 	std::vector<xdr::opaque_vec<>> proposal_buffer;
 
 	//! map block_type to block_id, considering the fact
@@ -53,9 +52,9 @@ class NonspeculativeVMBridge {
 	//! (in which case, this returns a default, null_id value).
 	vm_block_id get_block_id(std::unique_ptr<vm_block_type> const& blk) {
 		if (blk) {
-			return VMType::nonempty_block_id(*blk);
+			return VMBase::nonempty_block_id(*blk);
 		}
-		return VMType::empty_block_id();
+		return VMBase::empty_block_id();
 	}
 
 	void init_guard() const {
@@ -66,7 +65,7 @@ class NonspeculativeVMBridge {
 
 public:
 
-	NonspeculativeVMBridge(std::shared_ptr<VMType> vm)
+	NonspeculativeVMBridge(std::shared_ptr<VMBase> vm)
 		: vm(vm)
 		, initialized(false)
 		{}
@@ -127,7 +126,7 @@ public:
 
 		init_guard();
 		
-		auto blk_value = blk -> template try_vm_parse<vm_block_type>();
+		auto blk_value = vm -> try_parse(blk -> get_wire_body());//blk -> template try_vm_parse<vm_block_type>();
 		auto blk_id = get_block_id(blk_value);
 
 		txn.add_decided_block(blk, blk_id);

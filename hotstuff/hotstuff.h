@@ -131,11 +131,11 @@ public:
 	~HotstuffApp() override final
 	{}
 };
-/*
+
 //template<typename VMType>
 class NonspeculativeHotstuffApp : public HotstuffAppBase {
 
-	NonspeculativeVMBridge<VMBase> vm_bridge;
+	NonspeculativeVMBridge vm_bridge;
 
 	xdr::opaque_vec<> 
 	get_next_vm_block(bool nonempty_proposal, uint64_t hotstuff_height) override final {
@@ -164,27 +164,30 @@ public:
 		, vm_bridge(vm)
 		{}
 
-	void init_clean() {
+	void init_clean() override final {
 		decided_hash_index.create_db();
 		vm_bridge.init_clean();
 	}
 
-	void init_from_disk() {
+	void init_from_disk() override final {
 		decided_hash_index.open_db();
 		uint64_t highest_decision_height = reload_decided_blocks();
 		vm_bridge.init_from_disk(decided_hash_index, highest_decision_height);
 	}
 
-	bool proposal_buffer_is_empty() const {
+	bool proposal_buffer_is_empty() const override final {
 		return vm_bridge.proposal_buffer_is_empty();
 	}
 
 	void
-	add_proposal(xdr::opaque_vec<>&& proposal)
+	add_proposal(xdr::opaque_vec<>&& proposal) override final
 	{
 		vm_bridge.add_proposal(std::move(proposal));
 	}
-}; */
+
+	~NonspeculativeHotstuffApp() override final
+	{}
+};
 
 
 } /* hotstuff */
