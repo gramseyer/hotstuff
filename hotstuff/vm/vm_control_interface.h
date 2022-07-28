@@ -10,7 +10,7 @@
 
 namespace hotstuff {
 
-class HotstuffLMDB;
+class LogAccessWrapper;
 
 /**
  * Wraps the virtual machine in an asynchronous interface
@@ -82,7 +82,7 @@ public:
 	void init_clean() {
 		vm_instance -> init_clean();
 	}
-	void init_from_disk(HotstuffLMDB const& decided_block_cache) {
+	void init_from_disk(LogAccessWrapper const& decided_block_cache) {
 		vm_instance -> init_from_disk(decided_block_cache);
 	}
 	bool proposal_buffer_is_empty() const {

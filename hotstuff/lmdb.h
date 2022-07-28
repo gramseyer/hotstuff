@@ -10,6 +10,8 @@
 
 #include <xdrpp/marshal.h>
 
+#include <utility>
+
 namespace hotstuff {
 
 class QuorumCertificate;
@@ -78,13 +80,13 @@ public:
 		lmdb::dbenv::txn rtx;
 		lmdb::dbenv::cursor c;
 
-		friend class HotstuffLMDB;
+	public:
+
 		cursor(HotstuffLMDB const& lmdb)
 			: rtx(lmdb.rbegin())
 			, c(rtx.cursor_open(lmdb.get_data_dbi()))
 			{}
 
-	public:
 	
 		struct iterator {
 			lmdb::dbenv::cursor::iterator it;
@@ -113,7 +115,7 @@ public:
 			return iterator(c);
 		}
 
-		constexpr iterator end() {
+		constexpr static iterator end() {
 			return iterator();
 		}
 	};
@@ -121,7 +123,22 @@ public:
 	cursor forward_cursor() const {
 		return cursor{*this};
 	}
+
+	std::unique_ptr<cursor> forward_cursor_ptr() const {
+		return std::make_unique<cursor>(*this);
+	}
 	
+	std::optional<xdr::opaque_vec<>>
+	load_block_unparsed(const Hash& hash) const
+	{
+		auto res = load_block(hash, info);
+		if (res)
+		{
+			return res->body;
+		}
+		return std::nullopt;
+	}
+
 	template<typename vm_block_type>
 	vm_block_type
 	load_vm_block(Hash const& hash) const;

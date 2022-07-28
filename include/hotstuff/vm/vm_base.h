@@ -14,7 +14,9 @@ public:
 	virtual xdr::opaque_vec<> serialize() const = 0;
 };
 
-class HotstuffLMDB;
+
+class LogAccessWrapper;
+
 class VMBase
 {
 
@@ -34,7 +36,7 @@ public:
 	virtual void init_clean() = 0;
 
 	virtual 
-	void init_from_disk(HotstuffLMDB const& lmdb) = 0;
+	void init_from_disk(LogAccessWrapper const& lmdb) = 0;
 
 	virtual 
 	std::unique_ptr<VMBlock> 

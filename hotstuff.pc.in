@@ -8,4 +8,4 @@ Description: hotstuff
 Version: @PACKAGE_VERSION@
 Requires.private: lmdb libsodium
 Libs: -L${libdir} -lhotstuff
-Cflags: -I${includedir}
+Cflags: -I${includedir}/include

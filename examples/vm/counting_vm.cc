@@ -1,14 +1,14 @@
 #include "examples/vm/counting_vm.h"
 
-#include "hotstuff/lmdb.h"
+#include "hotstuff/log_access_wrapper.h"
 
 namespace hotstuff {
 
 void 
-CountingVM::init_from_disk(HotstuffLMDB const& lmdb) {
-	auto cursor = lmdb.forward_cursor();
-	for (auto iter = cursor.begin(); iter != cursor.end(); ++iter) {
-		auto [hash, id] = iter.template get_hs_hash_and_vm_data<VMBlockID>();
+CountingVM::init_from_disk(LogAccessWrapper const& lmdb) {
+	//auto cursor = lmdb.forward_cursor();
+	for (auto iter = lmdb.begin(); iter != lmdb.end(); ++iter) {
+		auto [hash, id] = iter.get_hs_hash_and_vm_data();
 
 		if (id) {
 			auto loaded_block = lmdb.template load_vm_block<CountingVMBlock>(hash);

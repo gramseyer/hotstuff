@@ -4,7 +4,6 @@
 namespace hotstuff
 {
 
-
 class ReplicaConfig;
 class VMBase;
 

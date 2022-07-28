@@ -11,7 +11,7 @@ top_builddir=@r_top_builddir@
 
 X_FILES = \
 	include/hotstuff/xdr/types.x \
-	include/hotstuff/xdr/hotstuff.x
+	hotstuff/xdr/hotstuff.x
 
 XH_FILES = $(X_FILES:.x=.h)
 
@@ -37,6 +37,7 @@ HOTSTUFF_SRCS = \
 	hotstuff/event_queue.cc \
 	hotstuff/hotstuff.cc \
 	hotstuff/hotstuff_app.cc \
+	hotstuff/log_access_wrapper.cc \
 	hotstuff/lmdb.cc \
 	hotstuff/manage_data_dirs.cc \
 	hotstuff/network_event.cc \

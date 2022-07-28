@@ -14,6 +14,8 @@
 
 namespace hotstuff {
 
+class LogAccessWrapper;
+
 /** 
  * Bridge between hotstuff consensus and the replicated
  * state machine.  
@@ -92,7 +94,7 @@ public:
 	}
 
 	//! Initialize the state machine and the speculation gadget from disk
-	void init_from_disk(HotstuffLMDB const& decided_block_index, uint64_t decided_hotstuff_height) {
+	void init_from_disk(LogAccessWrapper const& decided_block_index, uint64_t decided_hotstuff_height) {
 		vm_interface.init_from_disk(decided_block_index);
 		speculation_map.init_from_disk(decided_hotstuff_height);
 		initialized = true;

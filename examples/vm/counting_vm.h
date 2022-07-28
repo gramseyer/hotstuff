@@ -13,7 +13,7 @@
 
 namespace hotstuff {
 
-class HotstuffLMDB;
+class LogAccessWrapper;
 
 //! Demo class for vm types + block ids.
 //! Important: block_id should be in bijection with
@@ -76,7 +76,7 @@ public:
 		last_committed_state = 0;
 	}
 
-	void init_from_disk(HotstuffLMDB const& lmdb) override final;
+	void init_from_disk(LogAccessWrapper const& lmdb) override final;
 
 	std::unique_ptr<VMBlock> propose() override final {
 		state++;

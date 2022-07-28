@@ -7,13 +7,14 @@
 #include "hotstuff/block_storage/block_store.h"
 #include "hotstuff/consensus.h"
 #include "hotstuff/event_queue.h"
+#include "hotstuff/hotstuff_app.h"
+#include "hotstuff/log_access_wrapper.h"
 #include "hotstuff/network_event_queue.h"
 #include "hotstuff/protocol/hotstuff_protocol_manager.h"
 #include "hotstuff/protocol/hotstuff_server.h"
 #include "hotstuff/vm/hotstuff_vm_bridge.h"
 #include "hotstuff/vm/nonspeculative_vm_bridge.h"
 #include "hotstuff/xdr/types.h"
-#include "hotstuff/hotstuff_app.h"
 
 #include <xdrpp/types.h>
 
@@ -113,7 +114,7 @@ public:
 	void init_from_disk() override final {
 		decided_hash_index.open_db();
 		uint64_t highest_decision_height = reload_decided_blocks();
-		vm_bridge.init_from_disk(decided_hash_index, highest_decision_height);
+		vm_bridge.init_from_disk(LogAccessWrapper(decided_hash_index), highest_decision_height);
 	}
 
 	void put_vm_in_proposer_mode() override final {
