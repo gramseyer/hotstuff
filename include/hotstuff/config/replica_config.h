@@ -55,6 +55,12 @@ public:
         std::string root_data_folder);
 
     xdr::unique_sock tcp_connect(ReplicaService service) const;
+    xdr::unique_sock tcp_connect(const char* service) const;
+
+    std::string const& get_hostname() const
+    {
+        return hostname;
+    }
 
     const char* get_service_name(ReplicaService service) const;
 };

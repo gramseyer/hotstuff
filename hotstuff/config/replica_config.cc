@@ -14,6 +14,13 @@ ReplicaInfo::tcp_connect(ReplicaService service) const
 	return xdr::tcp_connect(hostname.c_str(), get_service_name(service));
 }
 
+xdr::unique_sock 
+ReplicaInfo::tcp_connect(const char* service) const
+{
+	return xdr::tcp_connect(hostname.c_str(), service);
+}
+
+
 const char* 
 ReplicaInfo::get_service_name(ReplicaService service) const
 {
