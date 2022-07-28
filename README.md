@@ -5,7 +5,7 @@ and Ittai Abraham.
 
 The implementation is closely based on the implementation at github.com/hot-stuff/libhotstuff.
 
-This implementation focuses on a (relatively) clean separation between hotstuff logic
+This implementation focuses on a clean separation between hotstuff logic
 and the logic of the state machine being replicated.  
 
 The integration is designed around allowing the proposer's state machine to speculatively
@@ -107,4 +107,8 @@ export global_xdrpp_CFLAGS
 export global_xdrpp_LIBS
 export global_XDRC
 ```
+
+You should also be able to just install xdrpp on the system.
+
+This library depends on xdrpp, libsodium, and lmdb.
 
