@@ -23,6 +23,7 @@ README
 databases/
 *.pc
 libhotstuff.a
+test.dSYM/*
 
 #mac
 .DS_STORE
