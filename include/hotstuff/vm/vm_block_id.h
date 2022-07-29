@@ -38,39 +38,4 @@ struct VMBlockID
     operator bool() const { return value.has_value(); }
 };
 
-/*
-template<typename block_id>
-struct VMBlockID {
-        std::optional<block_id> value;
-
-        VMBlockID() : value(std::nullopt) {}
-        VMBlockID(block_id const& value) : value(value) {}
-
-        VMBlockID(std::vector<uint8_t> const& bytes)
-                : value(std::nullopt)
-        {
-                try {
-                        value = std::make_optional<block_id>();
-                        xdr::xdr_from_opaque(bytes, *value);
-                } catch(...)
-                {
-                        value = std::nullopt;
-                }
-        }
-
-        bool operator==(const VMBlockID&) const = default;
-
-        std::vector<uint8_t>
-        serialize() const {
-                if (!value) {
-                        return {};
-                }
-                return xdr::xdr_to_opaque(*value);
-        }
-
-        operator bool() const {
-                return value.has_value();
-        }
-}; */
-
 } // namespace hotstuff
