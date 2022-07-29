@@ -1,7 +1,7 @@
 #pragma once
 
-#include "hotstuff/vm/vm_block_id.h"
 #include "hotstuff/vm/vm_base.h"
+#include "hotstuff/vm/vm_block_id.h"
 #include "hotstuff/xdr/types.h"
 
 #include <memory>
@@ -10,73 +10,68 @@
 namespace hotstuff
 {
 
-class HotstuffLMDB; 
+class HotstuffLMDB;
 
 class LogAccessWrapper
 {
 
-	HotstuffLMDB const& lmdb;
+    HotstuffLMDB const& lmdb;
 
-	struct IteratorInternals;
+    struct IteratorInternals;
 
-	std::optional<xdr::opaque_vec<>> load_block_unparsed(Hash const& hash) const;
+    std::optional<xdr::opaque_vec<>> load_block_unparsed(
+        Hash const& hash) const;
 
 public:
+    LogAccessWrapper(HotstuffLMDB const& lmdb)
+        : lmdb(lmdb)
+    {}
 
-	LogAccessWrapper(HotstuffLMDB const& lmdb)
-		: lmdb(lmdb)
-		{}
+    class iterator
+    {
 
-	class iterator
-	{
+        IteratorInternals* it;
+        // std::unique_ptr<IteratorInternals> it;
+        // std::unique_ptr<HotstuffLMDB::cursor> cursor;
+        // std::unique_ptr<HotstuffLMDB::cursor::iterator> it;
 
-		IteratorInternals* it;
-		//std::unique_ptr<IteratorInternals> it;
-		//std::unique_ptr<HotstuffLMDB::cursor> cursor;
-		//std::unique_ptr<HotstuffLMDB::cursor::iterator> it;
+    public:
+        using kv_t = std::pair<uint64_t, Hash>;
 
-	public:
+        iterator(HotstuffLMDB const& c);
+        iterator();
 
-		using kv_t = std::pair<uint64_t, Hash>;
+        kv_t operator*();
 
+        std::pair<Hash, VMBlockID> get_hs_hash_and_vm_data();
 
-		iterator(HotstuffLMDB const& c);
-		iterator();
+        iterator& operator++();
 
-		kv_t operator*();
+        bool operator==(const iterator& other) const;
+        // friend bool operator!=(const iterator &a, const iterator &b) =
+        // default;
 
-		std::pair<Hash, VMBlockID>
-		get_hs_hash_and_vm_data();
+        ~iterator();
+    };
 
-		iterator& operator++();
+    iterator begin() const;
 
-		bool operator==(const iterator &other) const;
-		//friend bool operator!=(const iterator &a, const iterator &b) = default;
+    iterator end() const;
 
-		~iterator();
-	};
-
-	iterator begin() const;
-
-	iterator end() const;
-
-	template<typename vm_block_type>
-	vm_block_type
-	load_vm_block(Hash const& hash) const;
-
+    template<typename vm_block_type>
+    vm_block_type load_vm_block(Hash const& hash) const;
 };
 
 template<typename vm_block_type>
 vm_block_type
 LogAccessWrapper::load_vm_block(Hash const& hash) const
 {
-	auto unparsed_opt = load_block_unparsed(hash);
-	if (!unparsed_opt) {
-		throw std::runtime_error("failed to load expected block");
-	}
-	return vm_block_type((*unparsed_opt));
+    auto unparsed_opt = load_block_unparsed(hash);
+    if (!unparsed_opt)
+    {
+        throw std::runtime_error("failed to load expected block");
+    }
+    return vm_block_type((*unparsed_opt));
 }
 
-
-
-} /* hotstuff */
+} // namespace hotstuff

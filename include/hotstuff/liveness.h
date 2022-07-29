@@ -1,7 +1,7 @@
 /**
  * Based on libhotstuff/include/liveness.h
  * Original copyright declaration follows
- * 
+ *
  * Copyright 2018 VMware
  * Copyright 2018 Ted Yin
  *
@@ -22,7 +22,8 @@
 
 #include "hotstuff/hotstuff_app.h"
 
-namespace hotstuff {
+namespace hotstuff
+{
 
 /**!
  * Proposer with fixed leader rotation
@@ -34,59 +35,59 @@ namespace hotstuff {
  * Does not implement leader rotation by
  * default, but will defer to new leader
  * by default if another replica proposes a block.
- * 
+ *
  * Timeouts, leader failure detection not implemented.
  */
-class PaceMakerWaitQC {
+class PaceMakerWaitQC
+{
 
     Hotstuff& hotstuff_app;
 
     Hash expected_hash;
 
-
-    void rotate_proposers() {
+    void rotate_proposers()
+    {
         proposer = (proposer + 1) % hotstuff_app.get_config().nreplicas;
     }
-    
+
     ReplicaID proposer;
 
 public:
-
     PaceMakerWaitQC(std::unique_ptr<Hotstuff>& hotstuff_app)
         : hotstuff_app(*hotstuff_app)
         , expected_hash()
         , proposer(hotstuff_app->get_last_proposer()) // get genesis proposer
-        {}
+    {}
 
-    void wait_for_qc() {
+    void wait_for_qc()
+    {
         auto res = hotstuff_app.wait_for_new_qc(expected_hash);
 
-        if (!res) {
+        if (!res)
+        {
             proposer = hotstuff_app.get_last_proposer();
         }
     }
 
-    bool should_propose() {
-        return proposer == hotstuff_app.get_self_id();
-    }
+    bool should_propose() { return proposer == hotstuff_app.get_self_id(); }
 
-    void set_self_as_proposer() {
-        proposer = hotstuff_app.get_self_id();
-    }
+    void set_self_as_proposer() { proposer = hotstuff_app.get_self_id(); }
 
-    void do_propose() {
+    void do_propose()
+    {
         proposer = hotstuff_app.get_self_id();
         expected_hash = hotstuff_app.do_propose();
-        //TODO reset any timeout
+        // TODO reset any timeout
     }
 
-    void do_empty_propose() {
+    void do_empty_propose()
+    {
         proposer = hotstuff_app.get_self_id();
         expected_hash = hotstuff_app.do_empty_propose();
     }
 };
 
-} /* hotstuff */
+} // namespace hotstuff
 
 #if 0
 

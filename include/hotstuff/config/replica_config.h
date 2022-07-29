@@ -25,7 +25,8 @@
 
 #include <unordered_map>
 
-namespace hotstuff {
+namespace hotstuff
+{
 
 enum ReplicaService : int32_t
 {
@@ -33,59 +34,54 @@ enum ReplicaService : int32_t
     PROTOCOL_SERVICE = 2
 };
 
-class ReplicaInfo {
+class ReplicaInfo
+{
 
     std::string hostname;
     std::string block_fetch_port;
     std::string protocol_port;
 
 public:
-
     std::string root_data_folder;
 
     ReplicaID id;
     PublicKey pk;
 
-    ReplicaInfo(
-        ReplicaID id, 
-        PublicKey pk, 
-        std::string hostname,
-        std::string block_fetch_port,
-        std::string protocol_port,
-        std::string root_data_folder);
+    ReplicaInfo(ReplicaID id,
+                PublicKey pk,
+                std::string hostname,
+                std::string block_fetch_port,
+                std::string protocol_port,
+                std::string root_data_folder);
 
     xdr::unique_sock tcp_connect(ReplicaService service) const;
     xdr::unique_sock tcp_connect(const char* service) const;
 
-    std::string const& get_hostname() const
-    {
-        return hostname;
-    }
+    std::string const& get_hostname() const { return hostname; }
 
     const char* get_service_name(ReplicaService service) const;
 };
 
-class ReplicaConfig {
+class ReplicaConfig
+{
 
     std::unordered_map<ReplicaID, ReplicaInfo> replica_map;
 
 public:
     size_t nreplicas;
-    size_t nmajority; 
+    size_t nmajority;
 
     ReplicaConfig();
 
-    void add_replica(const ReplicaInfo &info);
+    void add_replica(const ReplicaInfo& info);
     void finish_init();
-
 
     const ReplicaInfo& get_info(ReplicaID rid) const;
 
-    const PublicKey& 
-    get_publickey(ReplicaID rid) const;
+    const PublicKey& get_publickey(ReplicaID rid) const;
 
-    std::vector<ReplicaInfo> 
-    list_info() const {
+    std::vector<ReplicaInfo> list_info() const
+    {
         std::vector<ReplicaInfo> out;
         for (auto const& [_, info] : replica_map)
         {
@@ -94,9 +90,10 @@ public:
         return out;
     }
 
-    bool is_valid_replica(ReplicaID replica) const {
+    bool is_valid_replica(ReplicaID replica) const
+    {
         return (replica_map.find(replica) != replica_map.end());
     }
 };
 
-} /* hotstuff */
+} // namespace hotstuff

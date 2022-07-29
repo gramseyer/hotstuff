@@ -8,11 +8,9 @@
 namespace hotstuff
 {
 
-void 
-__attribute__((constructor)) 
-initialize_crypto();
+void __attribute__((constructor)) initialize_crypto();
 
 std::pair<PublicKey, SecretKey>
 deterministic_keypair_from_uint64(uint64_t val);
 
-} /* hotstuff */
+} // namespace hotstuff
