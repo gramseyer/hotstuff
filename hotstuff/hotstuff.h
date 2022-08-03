@@ -74,7 +74,6 @@ public:
 
 class HotstuffLMDB;
 
-//template<typename VMType>
 class HotstuffApp : public HotstuffAppBase {
 
 	HotstuffVMBridge vm_bridge;
@@ -132,7 +131,6 @@ public:
 	{}
 };
 
-//template<typename VMType>
 class NonspeculativeHotstuffApp : public HotstuffAppBase {
 
 	NonspeculativeVMBridge vm_bridge;
