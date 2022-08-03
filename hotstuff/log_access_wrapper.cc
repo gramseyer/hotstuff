@@ -40,7 +40,8 @@ LogAccessWrapper::iterator::~iterator()
 {
 	if (!it)
 	{
-		throw std::runtime_error("invalid iterator internals in iterator destruction");
+		// invalid iterator internals in iterator destruction
+		std::terminate();
 	}
 	delete it;
 }
