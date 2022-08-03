@@ -4,8 +4,9 @@
 #include "hotstuff/hotstuff_app.h"
 
 #include "hotstuff/config/replica_config.h"
-#include "hotstuff/crypto/crypto_utils.h"
 #include "hotstuff/manage_data_dirs.h"
+
+#include "test_utils/keygen.h"
 
 #include "hotstuff/liveness.h"
 
@@ -15,7 +16,7 @@ namespace hotstuff
 TEST_CASE("single replica", "[vm]")
 {
 	std::printf("start test\n");
-	auto [pk, sk] = deterministic_keypair_from_uint64(1);
+	auto [pk, sk] = test::deterministic_keypair_from_uint64(1);
 	ReplicaInfo r1(0, pk, "localhost", "9000", "9001", "test_data_folder/");
 
 	clear_all_data_dirs(r1);

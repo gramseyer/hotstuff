@@ -1,16 +1,17 @@
 #pragma once
 
-#include <cstdint>
-#include <utility>
-
 #include "hotstuff/xdr/types.h"
+
+#include <cstdint>
 
 namespace hotstuff
 {
 
-void __attribute__((constructor)) initialize_crypto();
+namespace test
+{
 
 std::pair<PublicKey, SecretKey>
 deterministic_keypair_from_uint64(uint64_t val);
 
+}
 } // namespace hotstuff

@@ -1,7 +1,5 @@
 #include "hotstuff/config/replica_config.h"
 
-#include "hotstuff/crypto/crypto_utils.h"
-
 #include "hotstuff/hotstuff_debug_macros.h"
 
 #include <optional>

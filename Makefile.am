@@ -73,7 +73,8 @@ EXAMPLES_SRCS = \
 
 HOTSTUFF_TEST_SRCS = \
 	hotstuff/vm/tests/test_speculative_exec_gadget.cc \
-	hotstuff/vm/tests/test_counting_vm.cc
+	hotstuff/vm/tests/test_counting_vm.cc \
+	test_utils/keygen.cc
 
 LMDB_SRCS = \
 	lmdb/lmdb_types.cc \
