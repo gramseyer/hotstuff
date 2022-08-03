@@ -1,5 +1,8 @@
 #include "hotstuff/vm/vm_control_interface.h"
 #include "hotstuff/hotstuff_debug_macros.h"
+
+#include "hotstuff/vm/vm_base.h"
+
 namespace hotstuff
 {
 
@@ -193,6 +196,18 @@ VMControlInterface::finish_work_and_force_rewind()
 {
     wait_for_async_task();
     vm_instance->rewind_to_last_commit();
+}
+
+void
+VMControlInterface::init_clean()
+{
+    vm_instance->init_clean();
+}
+
+void
+VMControlInterface::init_from_disk(LogAccessWrapper const& decided_block_cache)
+{
+    vm_instance->init_from_disk(decided_block_cache);
 }
 
 } // namespace hotstuff

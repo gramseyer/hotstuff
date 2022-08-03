@@ -1,17 +1,21 @@
 #pragma once
 
-#include "hotstuff/vm/vm_base.h"
 #include "utils/async_worker.h"
+
+#include "hotstuff/vm/vm_block_id.h"
 
 #include <cstdint>
 #include <memory>
 #include <mutex>
+#include <optional>
 #include <vector>
 
 namespace hotstuff
 {
 
 class LogAccessWrapper;
+class VMBase;
+class VMBlock;
 
 /**
  * Wraps the virtual machine in an asynchronous interface
@@ -67,11 +71,8 @@ public:
     void finish_work_and_force_rewind();
 
     // call before any usage
-    void init_clean() { vm_instance->init_clean(); }
-    void init_from_disk(LogAccessWrapper const& decided_block_cache)
-    {
-        vm_instance->init_from_disk(decided_block_cache);
-    }
+    void init_clean();
+    void init_from_disk(LogAccessWrapper const& decided_block_cache);
 
     // Called by external controls (i.e. from main logic component)
     bool proposal_buffer_is_empty() const

@@ -1,5 +1,7 @@
 #include "hotstuff/vm/hotstuff_vm_bridge.h"
 
+#include "hotstuff/vm/vm_base.h"
+
 namespace hotstuff
 {
 

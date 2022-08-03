@@ -9,7 +9,6 @@
 #include "hotstuff/hotstuff_debug_macros.h"
 
 #include "hotstuff/vm/speculative_exec_gadget.h"
-#include "hotstuff/vm/vm_base.h"
 #include "hotstuff/vm/vm_control_interface.h"
 
 #include <cstdint>
@@ -19,6 +18,7 @@ namespace hotstuff
 {
 
 class LogAccessWrapper;
+class VMBase;
 
 /**
  * Bridge between hotstuff consensus and the replicated
