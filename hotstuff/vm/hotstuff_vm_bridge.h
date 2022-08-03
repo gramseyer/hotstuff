@@ -10,6 +10,7 @@
 
 #include "hotstuff/vm/speculative_exec_gadget.h"
 #include "hotstuff/vm/vm_control_interface.h"
+#include "hotstuff/lmdb.h"
 
 #include <cstdint>
 #include <memory>
