@@ -65,6 +65,7 @@ TEST_CASE("single replica", "[vm]")
 		REQUIRE(vm->get_last_committed_height() == 2);
 		REQUIRE(vm->get_speculative_height() == 8);
 	}
+	clear_all_data_dirs(r1);
 }
 
 
