@@ -32,12 +32,10 @@ public:
     virtual bool proposal_buffer_is_empty() const = 0;
     virtual void stop_proposals() { unimplemented(); }
 
-protected:
     virtual Hash do_propose() = 0;
     //! Propose an empty block.
     virtual Hash do_empty_propose() = 0;
 
-public:
     virtual void add_proposal(xdr::opaque_vec<>&& proposal) { unimplemented(); }
 
     //! wait for new quorum cert.
