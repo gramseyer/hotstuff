@@ -34,12 +34,11 @@ namespace hotstuff {
  */
 class NonspeculativeVMBridge {
 
-	using vm_block_id = VMBlockID;//typename VMType::block_id;
-	using vm_block_type = VMBlock; //typename VMType::block_type;
+	using vm_block_id = VMBlockID;
+	using vm_block_type = VMBlock;
 
 	//TODO: rewrite with a non-speculative version of control interface
 	// cut out some of the extra code, essentially
-	//VMControlInterface<VMType> vm_interface;
 	std::shared_ptr<VMBase> vm;
 	
 	bool initialized;
