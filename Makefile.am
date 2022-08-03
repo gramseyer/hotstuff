@@ -65,6 +65,7 @@ HOTSTUFF_SRCS = \
 	hotstuff/protocol/hotstuff_protocol_manager.cc \
 	hotstuff/protocol/hotstuff_server.cc \
 	hotstuff/vm/hotstuff_vm_bridge.cc \
+	hotstuff/vm/nonspeculative_vm_bridge.cc \
 	hotstuff/vm/vm_control_interface.cc
 
 EXAMPLES_SRCS = \

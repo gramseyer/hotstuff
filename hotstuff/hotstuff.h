@@ -169,8 +169,8 @@ public:
 
 	void init_from_disk() override final {
 		decided_hash_index.open_db();
-		uint64_t highest_decision_height = reload_decided_blocks();
-		vm_bridge.init_from_disk(decided_hash_index, highest_decision_height);
+		reload_decided_blocks();
+		vm_bridge.init_from_disk(LogAccessWrapper(decided_hash_index));
 	}
 
 	bool proposal_buffer_is_empty() const override final {
