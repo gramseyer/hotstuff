@@ -21,7 +21,6 @@ lib_LIBRARIES = libhotstuff.a
 
 pkginclude_HEADERS = \
 	include/hotstuff/config/replica_config.h \
-	include/hotstuff/crypto/crypto_utils.h \
 	include/hotstuff/hotstuff_app.h \
 	include/hotstuff/liveness.h \
 	include/hotstuff/log_access_wrapper.h \
