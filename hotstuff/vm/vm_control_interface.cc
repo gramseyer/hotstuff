@@ -3,7 +3,6 @@
 namespace hotstuff 
 {
 
-//template<typename VMType>
 void
 VMControlInterface::set_proposer()
 {
@@ -12,8 +11,6 @@ VMControlInterface::set_proposer()
 	is_proposer = true;
 }
 
-//template<typename VMType>
-//typename VMControlInterface<VMType>::proposal_buffer_t
 VMControlInterface::proposal_buffer_t
 VMControlInterface::get_proposal()
 {
@@ -56,7 +53,6 @@ VMControlInterface::get_proposal()
 	return out;
 }
 
-//template<typename VMType>
 void
 VMControlInterface::clear_proposal_settings() {
 	is_proposer = false;
@@ -64,7 +60,6 @@ VMControlInterface::clear_proposal_settings() {
 	additional_proposal_requests = 0;
 }
 
-//template<typename VMType>
 void
 VMControlInterface::submit_block_for_exec(submission_t submission)
 {
@@ -82,7 +77,6 @@ VMControlInterface::submit_block_for_exec(submission_t submission)
 //! some block_ids would get skipped
 //! (if, for example, this method gets called twice in succession
 //! before the run() thread wakes on the cv).
-//template<typename VMType>
 void
 VMControlInterface::log_commitment(VMBlockID const& block_id) {
 	std::lock_guard lock(mtx);
@@ -96,7 +90,6 @@ VMControlInterface::log_commitment(VMBlockID const& block_id) {
 }
 
 
-//template<typename VMType>
 void
 VMControlInterface::run() {
 	HOTSTUFF_INFO("VM INTERFACE: start run()");
@@ -159,7 +152,6 @@ VMControlInterface::run() {
 //! both acquire a lock on speculation_map.
 //! TODO this arrangement is fragile, and would be easy
 //! to accidentally break.
-//template<typename VMType>
 void
 VMControlInterface::finish_work_and_force_rewind() {
 	wait_for_async_task();

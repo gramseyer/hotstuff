@@ -23,11 +23,12 @@ using block_ptr_t = std::shared_ptr<HotstuffBlock>;
 struct load_from_disk_block_t {};
 struct genesis_block_t {};
 
-/*
+/**
  * Typical workflow:
  * (1) validate_hotstuff() -- ensures hotstuff block is well formed
  * (2) validate parent exists (i.e. through BlockStore)
- * (3) At exec time, try_delayed_parse (and then exec)
+ * (3) At exec time, vm calls get_wire_body() and 
+ * then tries to parse it to something the vm understands (and then exec it)
  */
 class HotstuffBlock {
 
@@ -100,29 +101,6 @@ public:
 	 * (2) quorum cert is valid
 	 */
 	bool validate_hotstuff(const ReplicaConfig& config) const;
-
-	/*
-	 * Try to parse body into a speedex (header, txs) pair.
-	 * body.size() == 0 is considered to be no speedex block (which is valid for speedex.  Just ignored.)
-	 * parse failures are considered an invalid speedex block. (but valid for hotstuff)
-	 */
-	template<typename ParseType>
-	std::unique_ptr<ParseType>
-	try_vm_parse() 
-	{
-		if (!has_body()) {
-			return nullptr;
-		}
-		auto parsed_block_body = std::make_unique<ParseType>();
-
-		try {
-			xdr::xdr_from_opaque(wire_block.body, *parsed_block_body);
-		} catch(...) {
-			HOTSTUFF_INFO("block parse failed");
-			return nullptr;
-		}
-		return parsed_block_body;
-	}
 
 	xdr::opaque_vec<> const&
 	get_wire_body() const{

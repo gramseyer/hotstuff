@@ -20,15 +20,14 @@ class LogAccessWrapper;
  * that the virtual machine must handle.
  * 
  */
-//template<typename VMType>
 class VMControlInterface : public utils::AsyncWorker {
 	std::shared_ptr<VMBase> vm_instance;
 
 	using utils::AsyncWorker::mtx;
 	using utils::AsyncWorker::cv;
 
-	using proposal_buffer_t = std::unique_ptr<VMBlock>;// typename VMType::block_type>;
-	using submission_t = std::unique_ptr<VMBlock>;//typename VMType::block_type>;
+	using proposal_buffer_t = std::unique_ptr<VMBlock>;
+	using submission_t = std::unique_ptr<VMBlock>;
 
 	size_t PROPOSAL_BUFFER_TARGET = 3;
 
@@ -40,7 +39,7 @@ class VMControlInterface : public utils::AsyncWorker {
 
 	bool is_proposer;
 
-	std::optional<VMBlockID> highest_committed_id; // typename VMType::block_id> highest_committed_id;
+	std::optional<VMBlockID> highest_committed_id;
 
 	void clear_proposal_settings();
 

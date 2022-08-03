@@ -149,7 +149,6 @@ public:
 
 		std::unique_ptr<vm_block_type> blk_value = vm -> try_parse(blk -> get_wire_body());
 		
-		//auto blk_value = blk -> template try_vm_parse<vm_block_type>();
 		auto blk_id = get_block_id(blk_value);
 
 		txn.add_decided_block(blk, blk_id);
