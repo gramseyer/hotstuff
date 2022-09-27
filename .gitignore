@@ -24,6 +24,7 @@ databases/
 *.pc
 libhotstuff.a
 test.dSYM/*
+test-driver
 
 #mac
 .DS_STORE

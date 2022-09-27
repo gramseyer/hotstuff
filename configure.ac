@@ -21,7 +21,7 @@ CXXFLAGS="$CXXFLAGS $WFLAGS"
 PKG_PROG_PKG_CONFIG
 PKG_CHECK_MODULES([libsodium], [libsodium])
 PKG_CHECK_MODULES([lmdb], [lmdb])
-PKG_CHECK_MODULES([Catch2], [Catch2])
+PKG_CHECK_MODULES([Catch2], [catch2])
 
 export CXXFLAGS
 

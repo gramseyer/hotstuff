@@ -115,7 +115,7 @@ main/test.o : CXXFLAGS += $(Catch2_CFLAGS)
 
 test_SOURCES = $(SRCS) $(EXTRA_SRCS) main/test.cc
 
-test_LDFLAGS = $(Catch2_LIBS)
+test_LDADD = $(LDADD) $(Catch2_LIBS)
 
 check_PROGRAMS = test
 TESTS = test
