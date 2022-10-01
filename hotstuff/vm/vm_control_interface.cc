@@ -94,6 +94,7 @@ VMControlInterface::clear_proposal_settings()
 void
 VMControlInterface::submit_block_for_exec(submission_t submission)
 {
+    wait_for_async_task();
     std::lock_guard lock(mtx);
 
     clear_proposal_settings();
@@ -111,6 +112,7 @@ VMControlInterface::submit_block_for_exec(submission_t submission)
 void
 VMControlInterface::log_commitment(VMBlockID const& block_id)
 {
+    wait_for_async_task();
     std::lock_guard lock(mtx);
 
     if (block_id)
