@@ -11,6 +11,8 @@ class VMBlock
 public:
     virtual VMBlockID get_id() const = 0;
     virtual xdr::opaque_vec<> serialize() const = 0;
+
+    virtual ~VMBlock() = default;
 };
 
 class LogAccessWrapper;
@@ -60,7 +62,7 @@ public:
 
     virtual void rewind_to_last_commit() = 0;
 
-    virtual ~VMBase() {}
+    virtual ~VMBase() = default;
 };
 
 } // namespace hotstuff

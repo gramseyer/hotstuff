@@ -50,7 +50,7 @@ public:
 
     virtual ReplicaID get_self_id() const = 0;
 
-    virtual ~Hotstuff() {}
+    virtual ~Hotstuff() = default;
 };
 
 /**!
