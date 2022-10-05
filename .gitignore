@@ -26,6 +26,9 @@ libhotstuff.a
 test.dSYM/*
 test-driver
 
+#micro
+log.txt
+
 #mac
 .DS_STORE
 *~

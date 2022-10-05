@@ -1,6 +1,6 @@
 #include "hotstuff/lmdb.h"
 
-#include "utils/serialize_big_endian.h"
+#include <utils/serialize_endian.h>
 
 #include "hotstuff/manage_data_dirs.h"
 
