@@ -1,10 +1,12 @@
 #include "hotstuff/consensus.h"
 
 #include "hotstuff/hotstuff_debug_macros.h"
-#include "utils/debug_utils.h"
+#include <utils/debug_utils.h>
 #include "hotstuff/manage_data_dirs.h"
 
 namespace hotstuff {
+
+using utils::array_to_str;
 
 HotstuffCore::HotstuffCore(const ReplicaConfig& config, ReplicaID self_id)
 	: genesis_block(HotstuffBlock::genesis_block())
@@ -109,7 +111,7 @@ HotstuffCore::update(const block_ptr_t& nblk) {
 
 void HotstuffCore::on_receive_vote(const PartialCertificate& partial_cert, block_ptr_t certified_block, ReplicaID voterid) {
 
-	HSC_INFO("recv vote on %s", debug::hash_to_str(certified_block -> get_hash()).c_str());
+	HSC_INFO("recv vote on %s", array_to_str(certified_block -> get_hash()).c_str());
 
     auto& self_qc = certified_block -> get_self_qc();
 
@@ -121,7 +123,7 @@ void HotstuffCore::on_receive_vote(const PartialCertificate& partial_cert, block
 
     if (has_quorum_after && !had_quorum_before)
     {
-    	HSC_INFO("got new quorum on %s", debug::hash_to_str(certified_block -> get_hash()).c_str());
+    	HSC_INFO("got new quorum on %s", array_to_str(certified_block -> get_hash()).c_str());
     	update_hqc(certified_block, self_qc);
 
     	on_new_qc(certified_block -> get_hash());

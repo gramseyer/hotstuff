@@ -5,7 +5,7 @@
 
 #include "hotstuff/lmdb.h"
 
-#include "utils/debug_utils.h"
+#include <utils/debug_utils.h>
 
 namespace hotstuff {
 
@@ -147,7 +147,7 @@ HotstuffAppBase::reload_decided_blocks() {
 
 		for (auto [_, hash] : cursor)
 		{
-			HOTSTUFF_INFO("LOADING: block hash %s", debug::hash_to_str(hash).c_str());
+			HOTSTUFF_INFO("LOADING: block hash %s", utils::array_to_str(hash).c_str());
 			block_ptr_t blk = HotstuffBlock::load_decided_block(hash, config.get_info(self_id));
 			auto res = block_store.insert_block(blk);
 			if (res) {

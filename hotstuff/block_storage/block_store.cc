@@ -4,9 +4,11 @@
 
 #include "hotstuff/hotstuff_debug_macros.h"
 
-#include "utils/debug_utils.h"
+#include <utils/debug_utils.h>
 
 namespace hotstuff {
+
+using utils::array_to_str;
 
 void
 BlockStore::write_to_disk(const Hash& hash, const ReplicaInfo& info) {
@@ -34,7 +36,7 @@ BlockStore::insert_block(block_ptr_t block)
 	auto parent_it = block_cache.find(parent);
 	
 	if (parent_it == block_cache.end()) {
-		HOTSTUFF_INFO("failed to find parent for %s", debug::array_to_str(parent.data(), parent.size()).c_str());
+		HOTSTUFF_INFO("failed to find parent for %s", array_to_str(parent.data(), parent.size()).c_str());
 		missing_dependencies.parent_hash = parent;
 	}
 
@@ -42,7 +44,7 @@ BlockStore::insert_block(block_ptr_t block)
 	auto justify_it = block_cache.find(justify_hash);
 
 	if (justify_it == block_cache.end()) {
-		HOTSTUFF_INFO("failed to find justify for %s", debug::array_to_str(justify_hash.data(), justify_hash.size()).c_str());
+		HOTSTUFF_INFO("failed to find justify for %s", array_to_str(justify_hash.data(), justify_hash.size()).c_str());
 		missing_dependencies.justify_hash = justify_hash;
 	}
 
@@ -65,7 +67,7 @@ BlockStore::get_block(const Hash& block_hash)
 
 	auto it = block_cache.find(block_hash);
 	if (it == block_cache.end()) {
-		HOTSTUFF_INFO("failed to find block %s", debug::hash_to_str(block_hash).c_str());
+		HOTSTUFF_INFO("failed to find block %s", array_to_str(block_hash).c_str());
 		return nullptr;
 	}
 

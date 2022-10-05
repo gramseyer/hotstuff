@@ -5,7 +5,8 @@
 #include "hotstuff/network_event_queue.h"
 
 #include "hotstuff/hotstuff_debug_macros.h"
-#include "utils/debug_utils.h"
+
+#include <utils/debug_utils.h>
 
 namespace hotstuff {
 
@@ -102,7 +103,7 @@ BlockFetchManager::deliver_block(block_ptr_t blk) {
 	auto it = outstanding_reqs.find(hash);
 
 	if (it == outstanding_reqs.end()) {
-		HOTSTUFF_INFO("received block %s with no pending request", debug::array_to_str(hash.data(), hash.size()).c_str());
+		HOTSTUFF_INFO("received block %s with no pending request", utils::array_to_str(hash.data(), hash.size()).c_str());
 		return {};
 	}
 
