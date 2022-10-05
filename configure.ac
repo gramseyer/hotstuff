@@ -34,38 +34,31 @@ AS_IF([test -z "$xdrpp_INTERNAL"],
 		AC_PATH_PROG(XDRC, [xdrc])
 	], 
 	[
-		xdrpp_LIBS=$global_xdrpp_LIBS
-		xdrpp_CFLAGS=$global_xdrpp_CFLAGS
 		XDRC=$global_XDRC
 		AC_MSG_CHECKING(using xdrpp with xdrc=$XDRC lib=$xdrpp_LIBS cflags=$xdrpp_CFLAGS)
 	])
 
-AC_MSG_RESULT(ac is $ac_top_srcdir try2 = $ac_pwd)
+AS_IF([test -z "$XDRC"],
+	[AC_MSG_ERROR(failed to find XDRC $XDRC)],
+	[AC_MSG_NOTICE(found XDRC $XDRC)])
+
+
+AS_IF([test -z "$ABS_TOP_DIR"],
+	[ABS_TOP_DIR=$ac_pwd],
+	)
+
+AC_MSG_NOTICE(ABS_TOP_DIR is $ABS_TOP_DIR)
 
 AC_SUBST(r_abs_top_srcdir, $ABS_TOP_DIR)
 AC_SUBST(r_top_srcdir, $ABS_TOP_DIR)
 AC_SUBST(r_top_builddir, $ABS_TOP_DIR)
 AC_SUBST(r_abs_top_builddir, $ABS_TOP_DIR)
 
-export CXXFLAGS
-
-#AX_PKGCONFIG_SUBDIR(xdrpp)
-#AC_MSG_CHECKING(for xdrc)
-#AS_IF([test -n "$XDRC"],,
-#	    [test -n "$xdrpp_INTERNAL" -a x"$cross_compiling" != xyes],
-#	    [XDRC='$(top_builddir)/xdrpp/xdrc/xdrc$(EXEEXT)'],
-#	    [AC_PATH_PROG(XDRC, [xdrc])])
-#if test -z "$XDRC"; then
-#   AC_MSG_ERROR(Cannot find xdrc)
-#fi
-
 if test -z "$XDRC"; then
    AC_MSG_ERROR(Cannot find xdrc)
 fi
 AC_MSG_RESULT($XDRC)
 AC_SUBST(XDRC)
-
-
 
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([Makefile hotstuff.pc hotstuff-uninstalled.pc])
