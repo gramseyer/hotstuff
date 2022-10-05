@@ -20,7 +20,7 @@ VMControlInterface::VMControlInterface(std::shared_ptr<VMBase> vm)
 
 VMControlInterface::~VMControlInterface()
 {
-    end_async_thread();
+    terminate_worker();
 }
 
 void

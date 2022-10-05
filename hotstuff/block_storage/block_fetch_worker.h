@@ -47,6 +47,11 @@ public:
 
 	BlockFetchWorker(const ReplicaInfo& info, NetworkEventQueue& network_event_queue);
 
+	~BlockFetchWorker()
+	{
+		terminate_worker();
+	}
+
 	void add_request(Hash const& request);
 
 };

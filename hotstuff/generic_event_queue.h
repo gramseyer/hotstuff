@@ -37,8 +37,7 @@ protected:
 		}
 
 	~GenericEventQueue() {
-		utils::AsyncWorker::wait_for_async_task();
-		end_async_thread();
+		terminate_worker();
 	}
 
 	void add_event_(EventT const& e) {
