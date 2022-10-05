@@ -19,7 +19,7 @@
 
 #include "hotstuff/crypto/certs.h"
 
-#include "utils/bitvector.h"
+#include <utils/bitvector.h>
 
 namespace hotstuff {
 

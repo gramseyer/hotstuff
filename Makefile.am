@@ -4,8 +4,6 @@ SUBDIRS = $(PKGCONFIG_SUBDIRS)
 
 abs_top_srcdir=@r_abs_top_srcdir@
 abs_top_builddir=@r_abs_top_builddir@
-top_srcdir=@r_top_srcdir@
-top_builddir=@r_top_builddir@
 
 X_FILES = \
 	include/hotstuff/xdr/types.x \
@@ -79,18 +77,14 @@ LMDB_SRCS = \
 	lmdb/lmdb_types.cc \
 	lmdb/lmdb_wrapper.cc
 
-UTILS_SRCS = \
-	utils/cleanup.cc
-
-libhotstuff_a_SOURCES = $(HOTSTUFF_SRCS) $(LMDB_SRCS) $(UTILS_SRCS)
+libhotstuff_a_SOURCES = $(HOTSTUFF_SRCS) $(LMDB_SRCS)
 
 MAIN_CCS = \
 	main/test.cc
 
 SRCS = \
 	$(HOTSTUFF_SRCS) \
-	$(LMDB_SRCS) \
-	$(UTILS_SRCS)
+	$(LMDB_SRCS)
 
 TEST_SRCS = \
 	$(HOTSTUFF_TEST_SRCS)
@@ -103,8 +97,8 @@ $(SRCS:.cc=.o): CXXFLAGS += -I./include
 $(EXTRA_SRCS:.cc=.o) : CXXFLAGS += -I./include
 $(MAIN_CCS:.cc=.o) : CXXFLAGS += -I./include
 
-AM_CPPFLAGS = $(xdrpp_CFLAGS) $(libsodium_CFLAGS) $(lmdb_CFLAGS)
-LDADD = $(xdrpp_LIBS) $(libsodium_LIBS)  $(lmdb_LIBS)
+AM_CPPFLAGS = $(xdrpp_CFLAGS) $(libsodium_CFLAGS) $(lmdb_CFLAGS) $(utility_CFLAGS)
+LDADD = $(xdrpp_LIBS) $(libsodium_LIBS)  $(lmdb_LIBS) $(utility_LIBS)
 
 $(SRCS:.cc=.o) : $(XH_FILES)
 $(EXTRA_SRCS:.cc=.o) : $(XH_FILES)

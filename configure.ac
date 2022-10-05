@@ -43,22 +43,30 @@ AS_IF([test -z "$XDRC"],
 	[AC_MSG_NOTICE(found XDRC $XDRC)])
 
 
-AS_IF([test -z "$ABS_TOP_DIR"],
-	[ABS_TOP_DIR=$ac_pwd],
+AS_IF([test -z "$ABS_TOP_BUILDDIR"],
+	[
+		ABS_TOP_BUILDDIR=$ac_pwd
+		ABS_TOP_SRCDIR=$ac_pwd
+	],
 	)
 
-AC_MSG_NOTICE(ABS_TOP_DIR is $ABS_TOP_DIR)
-
-AC_SUBST(r_abs_top_srcdir, $ABS_TOP_DIR)
-AC_SUBST(r_top_srcdir, $ABS_TOP_DIR)
-AC_SUBST(r_top_builddir, $ABS_TOP_DIR)
-AC_SUBST(r_abs_top_builddir, $ABS_TOP_DIR)
+AC_SUBST(r_abs_top_srcdir, $ABS_TOP_SRCDIR)
+AC_SUBST(r_abs_top_builddir, $ABS_TOP_BUILDDIR)
 
 if test -z "$XDRC"; then
    AC_MSG_ERROR(Cannot find xdrc)
 fi
 AC_MSG_RESULT($XDRC)
 AC_SUBST(XDRC)
+
+AS_IF([test -z "$utility_INTERNAL"], 
+	[
+		AC_MSG_NOTICE("using pkg-config for utility")
+		PKG_CHECK_MODULES([utility], [utility])
+	], 
+	[
+		AC_MSG_CHECKING(using utility with lib=$utility_LIBS cflags=$utility_CFLAGS)
+	])
 
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([Makefile hotstuff.pc hotstuff-uninstalled.pc])
