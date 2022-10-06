@@ -73,18 +73,13 @@ HOTSTUFF_TEST_SRCS = \
 	hotstuff/vm/tests/test_counting_vm.cc \
 	test_utils/keygen.cc
 
-LMDB_SRCS = \
-	lmdb/lmdb_types.cc \
-	lmdb/lmdb_wrapper.cc
-
-libhotstuff_a_SOURCES = $(HOTSTUFF_SRCS) $(LMDB_SRCS)
+libhotstuff_a_SOURCES = $(HOTSTUFF_SRCS)
 
 MAIN_CCS = \
 	main/test.cc
 
 SRCS = \
-	$(HOTSTUFF_SRCS) \
-	$(LMDB_SRCS)
+	$(HOTSTUFF_SRCS)
 
 TEST_SRCS = \
 	$(HOTSTUFF_TEST_SRCS)
