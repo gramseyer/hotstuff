@@ -11,11 +11,25 @@
                 (std::string(__FILE__) + "." + std::to_string(__LINE__) + ":") \
                     .c_str() __VA_OPT__(, ) __VA_ARGS__)
 
-#define VM_BRIDGE_LEVEL DEBUG_LEVEL_INFO
-#define EVENT_LEVEL DEBUG_LEVEL_INFO
-#define NETWORK_EVENT_LEVEL DEBUG_LEVEL_INFO
-#define HSC_LEVEL DEBUG_LEVEL_INFO
-#define HOTSTUFF_INFO_LEVEL DEBUG_LEVEL_INFO
+#ifndef VM_BRIDGE_LEVEL
+    #define VM_BRIDGE_LEVEL DEBUG_LEVEL_NONE
+#endif
+
+#ifndef EVENT_LEVEL
+    #define EVENT_LEVEL DEBUG_LEVEL_NONE
+#endif
+
+#ifndef NETWORK_EVENT_LEVEL
+    #define NETWORK_EVENT_LEVEL DEBUG_LEVEL_NONE
+#endif
+
+#ifndef HSC_LEVEL
+    #define HSC_LEVEL DEBUG_LEVEL_NONE
+#endif
+
+#ifndef HOTSTUFF_INFO_LEVEL
+    #define HOTSTUFF_INFO_LEVEL DEBUG_LEVEL_NONE
+#endif
 
 #if VM_BRIDGE_LEVEL <= DEBUG_LEVEL_INFO
 #define VM_BRIDGE_INFO(s, ...) HSLOG("VM BRIDGE: ", s, __VA_ARGS__)
