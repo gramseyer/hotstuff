@@ -31,10 +31,10 @@ HotstuffVMBridge::init_guard() const
     }
 }
 
-HotstuffVMBridge::HotstuffVMBridge(std::shared_ptr<VMBase> vm)
+HotstuffVMBridge::HotstuffVMBridge(std::shared_ptr<VMBase> vm, HotstuffConfigs const& configs)
     : speculation_map()
     , vm(vm)
-    , vm_interface(vm)
+    , vm_interface(vm, configs)
     , initialized(false)
 {}
 

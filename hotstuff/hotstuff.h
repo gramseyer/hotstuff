@@ -8,6 +8,7 @@
 #include "hotstuff/consensus.h"
 #include "hotstuff/event_queue.h"
 #include "hotstuff/hotstuff_app.h"
+#include "hotstuff/hotstuff_configs.h"
 #include "hotstuff/log_access_wrapper.h"
 #include "hotstuff/network_event_queue.h"
 #include "hotstuff/protocol/hotstuff_protocol_manager.h"
@@ -22,6 +23,10 @@ namespace hotstuff {
 
 class HotstuffAppBase : public HotstuffCore {
 
+protected:
+	const HotstuffConfigs configs;
+
+private:
 	BlockStore block_store;
 	BlockFetchManager block_fetch_manager; 			// outbound block requests
 	BlockFetchServer block_fetch_server; 			// inbound block requests
@@ -56,7 +61,7 @@ protected:
 
 public:
 
-	HotstuffAppBase(const ReplicaConfig& config_, ReplicaID self_id, SecretKey sk);
+	HotstuffAppBase(const ReplicaConfig& config_, ReplicaID self_id, SecretKey sk, HotstuffConfigs const& configs);
 
 	//! Propose new block.
 	//! Block hash returned (for input to wait_for_new_qc)
@@ -100,9 +105,9 @@ class HotstuffApp : public HotstuffAppBase {
 
 public:
 
-	HotstuffApp(const ReplicaConfig& config, ReplicaID self_id, SecretKey sk, std::shared_ptr<VMBase> vm)
-		: HotstuffAppBase(config, self_id, sk)
-		, vm_bridge(vm)
+	HotstuffApp(const ReplicaConfig& config, ReplicaID self_id, SecretKey sk, std::shared_ptr<VMBase> vm, HotstuffConfigs const& _configs)
+		: HotstuffAppBase(config, self_id, sk, _configs)
+		, vm_bridge(vm, configs)
 		{}
 
 	void init_clean() override final {
@@ -157,8 +162,8 @@ class NonspeculativeHotstuffApp : public HotstuffAppBase {
 
 public:
 
-	NonspeculativeHotstuffApp(const ReplicaConfig& config, ReplicaID self_id, SecretKey sk, std::shared_ptr<VMBase> vm)
-		: HotstuffAppBase(config, self_id, sk)
+	NonspeculativeHotstuffApp(const ReplicaConfig& config, ReplicaID self_id, SecretKey sk, std::shared_ptr<VMBase> vm, HotstuffConfigs const& _configs)
+		: HotstuffAppBase(config, self_id, sk, _configs)
 		, vm_bridge(vm)
 		{}
 

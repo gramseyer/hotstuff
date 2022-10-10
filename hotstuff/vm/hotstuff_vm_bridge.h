@@ -48,6 +48,8 @@ class VMBase;
  * complicated and error-prone.
  */
 
+struct HotstuffConfigs;
+
 class HotstuffVMBridge
 {
 
@@ -71,7 +73,7 @@ class HotstuffVMBridge
     void init_guard() const;
 
 public:
-    HotstuffVMBridge(std::shared_ptr<VMBase> vm);
+    HotstuffVMBridge(std::shared_ptr<VMBase> vm, HotstuffConfigs const& configs);
 
     //! Initialize state machine and speculation gadget to clean slate.
     void init_clean();

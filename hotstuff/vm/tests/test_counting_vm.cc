@@ -3,6 +3,8 @@
 #include "examples/vm/counting_vm.h"
 #include "hotstuff/hotstuff_app.h"
 
+#include "hotstuff/hotstuff_configs.h"
+
 #include "hotstuff/config/replica_config.h"
 #include "hotstuff/manage_data_dirs.h"
 
@@ -29,8 +31,8 @@ TEST_CASE("single replica", "[vm]")
 
 	auto vm = std::make_shared<CountingVM>();
 
-	auto app = make_speculative_hotstuff_instance(config, r1.id, sk, vm);
-	//HotstuffApp app(config, r1.id, sk, vm);
+	auto app = make_speculative_hotstuff_instance(config, r1.id, sk, vm, HotstuffConfigs());
+
 	app->init_clean();
 
 	PaceMakerWaitQC pmaker(app);

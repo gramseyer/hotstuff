@@ -1,14 +1,18 @@
 #include "hotstuff/vm/vm_control_interface.h"
 #include "hotstuff/hotstuff_debug_macros.h"
 
+#include "hotstuff/hotstuff_configs.h"
+
 #include "hotstuff/vm/vm_base.h"
 
 namespace hotstuff
 {
 
-VMControlInterface::VMControlInterface(std::shared_ptr<VMBase> vm)
+VMControlInterface::VMControlInterface(std::shared_ptr<VMBase> vm, HotstuffConfigs const& configs)
     : utils::AsyncWorker()
     , vm_instance(vm)
+    , configs(configs)
+    , PROPOSAL_BUFFER_TARGET(configs.proposal_buffer_target)
     , blocks_to_validate()
     , proposal_buffer()
     , additional_proposal_requests(0)
@@ -72,13 +76,16 @@ VMControlInterface::get_proposal()
     auto out = std::move(proposal_buffer.front());
     proposal_buffer.erase(proposal_buffer.begin());
 
-    additional_proposal_requests
-        = (proposal_buffer.size() > PROPOSAL_BUFFER_TARGET)
-              ? 0
-              : PROPOSAL_BUFFER_TARGET - proposal_buffer.size();
-    if (additional_proposal_requests > 0)
+    if (configs.immediately_refill_proposal_buffer)
     {
-        cv.notify_all();
+        additional_proposal_requests
+            = (proposal_buffer.size() > PROPOSAL_BUFFER_TARGET)
+                  ? 0
+                  : PROPOSAL_BUFFER_TARGET - proposal_buffer.size();
+        if (additional_proposal_requests > 0)
+        {
+            cv.notify_all();
+        }
     }
     return out;
 }

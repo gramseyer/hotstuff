@@ -6,6 +6,7 @@ namespace hotstuff
 
 class ReplicaConfig;
 class VMBase;
+class HotstuffConfigs;
 
 /**!
  * Base class for replicated state machine.
@@ -74,7 +75,8 @@ std::unique_ptr<Hotstuff>
 make_speculative_hotstuff_instance(const ReplicaConfig& config,
                                    ReplicaID self_id,
                                    SecretKey sk,
-                                   std::shared_ptr<VMBase> vm);
+                                   std::shared_ptr<VMBase> vm,
+                                   HotstuffConfigs const& configs);
 
 /**!
  * Create a hotstuff instance where the replicated state machine
@@ -88,6 +90,7 @@ std::unique_ptr<Hotstuff>
 make_nonspeculative_hotstuff_instance(const ReplicaConfig& config,
                                       ReplicaID self_id,
                                       SecretKey sk,
-                                      std::shared_ptr<VMBase> vm);
+                                      std::shared_ptr<VMBase> vm,
+                                      HotstuffConfigs const& configs);
 
 } // namespace hotstuff

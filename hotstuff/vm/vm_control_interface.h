@@ -16,6 +16,7 @@ namespace hotstuff
 class LogAccessWrapper;
 class VMBase;
 class VMBlock;
+class HotstuffConfigs;
 
 /**
  * Wraps the virtual machine in an asynchronous interface
@@ -35,7 +36,9 @@ class VMControlInterface : public utils::AsyncWorker
     using proposal_buffer_t = std::unique_ptr<VMBlock>;
     using submission_t = std::unique_ptr<VMBlock>;
 
-    size_t PROPOSAL_BUFFER_TARGET = 3;
+    HotstuffConfigs const& configs;
+
+    size_t PROPOSAL_BUFFER_TARGET;
 
     std::vector<submission_t> blocks_to_validate;
 
@@ -60,7 +63,7 @@ class VMControlInterface : public utils::AsyncWorker
     }
 
 public:
-    VMControlInterface(std::shared_ptr<VMBase> vm);
+    VMControlInterface(std::shared_ptr<VMBase> vm, HotstuffConfigs const& configs);
     ~VMControlInterface();
 
     // from hotstuff side
