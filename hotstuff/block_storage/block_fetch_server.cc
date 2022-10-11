@@ -52,7 +52,6 @@ BlockFetchServer::await_pollset_shutdown()
 	if (!done_lambda()) {
 		cv.wait(lock, done_lambda);
 	}
-	std::printf("shutdown happened\n");
 }
 
 
