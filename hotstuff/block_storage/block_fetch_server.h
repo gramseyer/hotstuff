@@ -31,11 +31,24 @@ class BlockFetchServer {
 	BlockFetchHandler handler;
 
 	xdr::pollset ps;
-	std::unique_ptr<xdr::srpc_tcp_listener<>> fetch_listener;
+	xdr::srpc_tcp_listener<> fetch_listener;
+
+	bool ps_is_shutdown = false;
+	std::atomic_flag start_shutdown = false;
+	std::mutex mtx;
+	std::condition_variable cv;
+
+	void await_pollset_shutdown();
 
 public:
 
 	BlockFetchServer(BlockStore& block_store, ReplicaInfo const& self_info);
+
+	~BlockFetchServer()
+	{
+		start_shutdown.test_and_set();
+		await_pollset_shutdown();
+	}
 };
 
 

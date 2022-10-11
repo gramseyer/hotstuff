@@ -32,18 +32,38 @@ HotstuffProtocolServer::HotstuffProtocolServer(NetworkEventQueue& queue, const R
 	: handler(queue, config)
 	, ps()
 	, protocol_listener(
-		std::make_unique<xdr::srpc_tcp_listener<>>(
 			ps, 
 			xdr::tcp_listen(
 				config.get_info(self_id).get_service_name(ReplicaService::PROTOCOL_SERVICE), 
 				AF_INET), 
 			false, 
-			xdr::session_allocator<void>()))
+			xdr::session_allocator<void>())
 	{
-		protocol_listener->register_service(handler);
+		protocol_listener.register_service(handler);
 		
 			std::thread([this] {
-				ps.run();
+				while(!start_shutdown.test())
+				{
+					ps.poll(1000);
+				}
+				std::lock_guard lock(mtx);
+				ps_is_shutdown = true;
+				cv.notify_all();
 			}).detach();
 	}
+
+void
+HotstuffProtocolServer::await_pollset_shutdown()
+{
+	auto done_lambda = [this] () -> bool {
+		return ps_is_shutdown;
+	};
+
+	std::unique_lock lock(mtx);
+	if (!done_lambda()) {
+		cv.wait(lock, done_lambda);
+	}
+	std::printf("shutdown happened\n");
+}
+
 } /* hotstuff */

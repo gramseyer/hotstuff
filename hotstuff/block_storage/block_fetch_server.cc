@@ -26,14 +26,34 @@ BlockFetchServer::BlockFetchServer(BlockStore& block_store, ReplicaInfo const& s
 	: handler(block_store)
 	, ps()
 	, fetch_listener(
-		std::make_unique<xdr::srpc_tcp_listener<>>(
-			ps, xdr::tcp_listen(self_info.get_service_name(ReplicaService::BLOCK_FETCH_SERVICE), AF_INET), false, xdr::session_allocator<void>()))
+		ps, xdr::tcp_listen(self_info.get_service_name(ReplicaService::BLOCK_FETCH_SERVICE), AF_INET), false, xdr::session_allocator<void>())
 	{
-		fetch_listener->register_service(handler);
+		fetch_listener.register_service(handler);
 
 		std::thread([this] {
-			ps.run();
+			while(!start_shutdown.test())
+			{
+				ps.poll(1000);
+			}
+			std::lock_guard lock(mtx);
+			ps_is_shutdown = true;
+			cv.notify_all();
 		}).detach();
 	}
+
+void
+BlockFetchServer::await_pollset_shutdown()
+{
+	auto done_lambda = [this] () -> bool {
+		return ps_is_shutdown;
+	};
+
+	std::unique_lock lock(mtx);
+	if (!done_lambda()) {
+		cv.wait(lock, done_lambda);
+	}
+	std::printf("shutdown happened\n");
+}
+
 
 } /* hotstuff */
