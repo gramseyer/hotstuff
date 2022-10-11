@@ -7,6 +7,10 @@
 #include <xdrpp/pollset.h>
 #include <xdrpp/srpc.h>
 
+#include <atomic>
+#include <mutex>
+#include <condition_variable>
+
 namespace hotstuff {
 
 class BlockStore;
