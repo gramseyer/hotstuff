@@ -42,7 +42,7 @@ HotstuffProtocolServer::HotstuffProtocolServer(NetworkEventQueue& queue, const R
 		protocol_listener.register_service(handler);
 		
 			std::thread([this] {
-				while(!start_shutdown.test())
+				while(!start_shutdown)
 				{
 					ps.poll(1000);
 				}

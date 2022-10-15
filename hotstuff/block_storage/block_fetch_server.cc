@@ -31,7 +31,7 @@ BlockFetchServer::BlockFetchServer(BlockStore& block_store, ReplicaInfo const& s
 		fetch_listener.register_service(handler);
 
 		std::thread([this] {
-			while(!start_shutdown.test())
+			while(!start_shutdown)
 			{
 				ps.poll(1000);
 			}

@@ -38,7 +38,7 @@ class BlockFetchServer {
 	xdr::srpc_tcp_listener<> fetch_listener;
 
 	bool ps_is_shutdown = false;
-	std::atomic_flag start_shutdown = false;
+	std::atomic<bool> start_shutdown = false;
 	std::mutex mtx;
 	std::condition_variable cv;
 
@@ -50,7 +50,7 @@ public:
 
 	~BlockFetchServer()
 	{
-		start_shutdown.test_and_set();
+		start_shutdown = true;
 		await_pollset_shutdown();
 	}
 };
