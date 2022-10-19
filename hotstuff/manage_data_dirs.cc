@@ -2,6 +2,8 @@
 
 #include "utils/save_load_xdr.h"
 
+#include <utils/mkdir.h>
+
 #include <filesystem>
 #include <system_error>
 
