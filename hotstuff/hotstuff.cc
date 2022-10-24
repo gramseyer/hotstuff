@@ -11,8 +11,8 @@ namespace hotstuff {
 
 using xdr::operator==;
 
-HotstuffAppBase::HotstuffAppBase(const ReplicaConfig& config_, ReplicaID self_id, SecretKey sk, HotstuffConfigs const& configs)
-	: HotstuffCore(config_, self_id)
+HotstuffAppBase::HotstuffAppBase(ReplicaConfig&& config_, ReplicaID self_id, SecretKey sk, HotstuffConfigs const& configs)
+	: HotstuffCore(std::move(config_), self_id)
 	, configs(configs)
 	, block_store(get_genesis())
 	, block_fetch_manager(block_store, config)

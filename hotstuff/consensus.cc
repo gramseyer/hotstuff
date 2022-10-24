@@ -8,14 +8,14 @@ namespace hotstuff {
 
 using utils::array_to_str;
 
-HotstuffCore::HotstuffCore(const ReplicaConfig& config, ReplicaID self_id)
+HotstuffCore::HotstuffCore(ReplicaConfig&& config, ReplicaID self_id)
 	: genesis_block(HotstuffBlock::genesis_block())
 	, hqc({genesis_block, genesis_block->get_self_qc().serialize()})
 	, b_lock(genesis_block)
 	, b_exec(genesis_block)
 	, vheight(0)
 	, self_id(self_id)
-	, config(config)
+	, config(std::move(config))
 	, b_leaf(genesis_block)
 	, decided_hash_index(config.get_info(self_id))
 	{

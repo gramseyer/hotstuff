@@ -60,12 +60,14 @@ public:
     std::string const& get_hostname() const { return hostname; }
 
     const char* get_service_name(ReplicaService service) const;
+
+    virtual ~ReplicaInfo() = default;
 };
 
 class ReplicaConfig
 {
 
-    std::unordered_map<ReplicaID, ReplicaInfo> replica_map;
+    std::unordered_map<ReplicaID, std::unique_ptr<ReplicaInfo>> replica_map;
 
 public:
     size_t nreplicas;
@@ -73,27 +75,16 @@ public:
 
     ReplicaConfig();
 
-    void add_replica(const ReplicaInfo& info);
+    void add_replica(std::unique_ptr<ReplicaInfo> info);
     void finish_init();
 
     const ReplicaInfo& get_info(ReplicaID rid) const;
 
     const PublicKey& get_publickey(ReplicaID rid) const;
 
-    std::vector<ReplicaInfo> list_info() const
-    {
-        std::vector<ReplicaInfo> out;
-        for (auto const& [_, info] : replica_map)
-        {
-            out.push_back(info);
-        }
-        return out;
-    }
+    std::vector<const ReplicaInfo*> list_info() const;
 
-    bool is_valid_replica(ReplicaID replica) const
-    {
-        return (replica_map.find(replica) != replica_map.end());
-    }
+    bool is_valid_replica(ReplicaID replica) const;
 };
 
 } // namespace hotstuff

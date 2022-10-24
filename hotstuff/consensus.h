@@ -67,7 +67,7 @@ private:
 
 public:
 
-	HotstuffCore(const ReplicaConfig& config, ReplicaID self_id);
+	HotstuffCore(ReplicaConfig&& config, ReplicaID self_id);
 
 	const ReplicaConfig& get_config() override final {
 		return config;

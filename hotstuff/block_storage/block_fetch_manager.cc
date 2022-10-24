@@ -71,6 +71,16 @@ BlockFetchManager::add_replica(ReplicaInfo const& info, NetworkEventQueue& net_q
 }
 
 
+void 
+BlockFetchManager::init_configs(NetworkEventQueue& net_queue)
+{
+	auto reps = config.list_info();
+	for (auto& replica : reps) {
+		add_replica(*replica, net_queue);
+	}
+}
+
+
 void
 BlockFetchManager::add_fetch_request(Hash const& requested_block, ReplicaID request_target, std::vector<NetEvent> const& dependent_events)
 {

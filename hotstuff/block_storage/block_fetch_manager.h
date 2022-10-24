@@ -104,13 +104,7 @@ public:
 		, config(config)
 		{}
 
-	void init_configs(NetworkEventQueue& net_queue)
-	{
-			auto reps = config.list_info();
-			for (auto& replica : reps) {
-				add_replica(replica, net_queue);
-			}
-	}
+	void init_configs(NetworkEventQueue& net_queue);
 
 	// add_fetch_request and deliver_block are ONLY called by
 	// the network event queue processor thread.  

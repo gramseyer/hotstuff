@@ -72,7 +72,7 @@ public:
  * replica.
  */
 std::unique_ptr<Hotstuff>
-make_speculative_hotstuff_instance(const ReplicaConfig& config,
+make_speculative_hotstuff_instance(ReplicaConfig&& config,
                                    ReplicaID self_id,
                                    SecretKey sk,
                                    std::shared_ptr<VMBase> vm,
@@ -87,7 +87,7 @@ make_speculative_hotstuff_instance(const ReplicaConfig& config,
  * then hotstuff will propose empty commands.
  */
 std::unique_ptr<Hotstuff>
-make_nonspeculative_hotstuff_instance(const ReplicaConfig& config,
+make_nonspeculative_hotstuff_instance(ReplicaConfig&& config,
                                       ReplicaID self_id,
                                       SecretKey sk,
                                       std::shared_ptr<VMBase> vm,

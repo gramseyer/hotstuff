@@ -36,9 +36,9 @@ HotstuffProtocolManager::HotstuffProtocolManager(EventQueue& heq, ReplicaConfig 
 		auto infos = config.list_info();
 		for (auto const& info : infos)
 		{
-			if (info.id != self_id)
+			if (info->id != self_id)
 			{
-				other_clients.emplace(info.id, std::make_unique<HotstuffProtocolClient>(info));
+				other_clients.emplace(info->id, std::make_unique<HotstuffProtocolClient>(*info));
 			}
 		}
 	}

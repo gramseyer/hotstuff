@@ -55,13 +55,14 @@ ReplicaConfig::ReplicaConfig()
 
 
 void
-ReplicaConfig::add_replica(const ReplicaInfo &info) {
-	auto rid = info.id;
+ReplicaConfig::add_replica(std::unique_ptr<ReplicaInfo> info) {
+	auto rid = info->id;
 	auto it = replica_map.find(rid);
 	if (it != replica_map.end()) {
 		throw std::runtime_error("can't add replicaid twice!");
 	}
-    replica_map.insert(std::make_pair(rid, info));
+	replica_map.emplace(rid, std::move(info));
+    //replica_map.insert(std::make_pair(rid, info));
     nreplicas++;
 }
 
@@ -80,12 +81,29 @@ ReplicaConfig::get_info(ReplicaID rid) const {
     auto it = replica_map.find(rid);
     if (it == replica_map.end())
         throw std::runtime_error(std::string("rid") + std::to_string(rid) + "not found");
-    return it->second;
+    return *(it->second);
 }
 
 const PublicKey&
 ReplicaConfig::get_publickey(ReplicaID rid) const {
     return get_info(rid).pk;
+}
+
+std::vector<const ReplicaInfo*> 
+ReplicaConfig::list_info() const
+{
+    std::vector<const ReplicaInfo*> out;
+    for (auto const& [_, info] : replica_map)
+    {
+        out.push_back(info.get());
+    }
+    return out;
+}
+
+bool 
+ReplicaConfig::is_valid_replica(ReplicaID replica) const
+{
+    return (replica_map.find(replica) != replica_map.end());
 }
 
 } /* hotstuff */
