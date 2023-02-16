@@ -8,18 +8,18 @@ namespace hotstuff {
 
 using utils::array_to_str;
 
-HotstuffCore::HotstuffCore(ReplicaConfig&& config, ReplicaID self_id)
+HotstuffCore::HotstuffCore(std::shared_ptr<ReplicaConfig> config, ReplicaID self_id)
 	: genesis_block(HotstuffBlock::genesis_block())
 	, hqc({genesis_block, genesis_block->get_self_qc().serialize()})
 	, b_lock(genesis_block)
 	, b_exec(genesis_block)
 	, vheight(0)
 	, self_id(self_id)
-	, config(std::move(config))
+	, config(config)
 	, b_leaf(genesis_block)
-	, decided_hash_index(config.get_info(self_id))
+	, decided_hash_index(config->get_info(self_id))
 	{
-		make_all_data_dirs(config.get_info(self_id));
+		make_all_data_dirs(config->get_info(self_id));
 	}
 
 //qc_block is the block pointed to by qc
@@ -67,7 +67,7 @@ HotstuffCore::update(const block_ptr_t& nblk) {
     if (blk1->get_height() > b_lock->get_height()) b_lock = blk1;
 
     //TODO threadpool or async worker to do writing in background
-    b_lock -> write_to_disk(config.get_info(self_id));
+    b_lock -> write_to_disk(config->get_info(self_id));
 
     const auto blk = blk1->get_justify();
     if (blk == nullptr) return;
@@ -115,11 +115,11 @@ void HotstuffCore::on_receive_vote(const PartialCertificate& partial_cert, block
 
     auto& self_qc = certified_block -> get_self_qc();
 
-    bool had_quorum_before = self_qc.has_quorum(config);
+    bool had_quorum_before = self_qc.has_quorum(*config);
 
     self_qc.add_partial_certificate(voterid, partial_cert);
 
-    bool has_quorum_after = self_qc.has_quorum(config);
+    bool has_quorum_after = self_qc.has_quorum(*config);
 
     if (has_quorum_after && !had_quorum_before)
     {

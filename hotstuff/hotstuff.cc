@@ -11,16 +11,16 @@ namespace hotstuff {
 
 using xdr::operator==;
 
-HotstuffAppBase::HotstuffAppBase(ReplicaConfig&& config_, ReplicaID self_id, SecretKey sk, HotstuffConfigs const& configs)
-	: HotstuffCore(std::move(config_), self_id)
+HotstuffAppBase::HotstuffAppBase(std::shared_ptr<ReplicaConfig> config_, ReplicaID self_id, SecretKey sk, HotstuffConfigs const& configs)
+	: HotstuffCore(config_, self_id)
 	, configs(configs)
 	, block_store(get_genesis())
-	, block_fetch_manager(block_store, config)
-	, block_fetch_server(block_store, config.get_info(self_id))
+	, block_fetch_manager(block_store, *config)
+	, block_fetch_server(block_store, config->get_info(self_id))
 	, event_queue(*this)
-	, network_event_queue(event_queue, block_fetch_manager, block_store, config)
-	, protocol_manager(event_queue, config, self_id)
-	, protocol_server(network_event_queue, config, self_id)
+	, network_event_queue(event_queue, block_fetch_manager, block_store, *config)
+	, protocol_manager(event_queue, *config, self_id)
+	, protocol_server(network_event_queue, *config, self_id)
 	, secret_key(sk)
 	, qc_wait_mtx()
 	, qc_wait_cv()
@@ -149,7 +149,7 @@ HotstuffAppBase::reload_decided_blocks() {
 		for (auto [_, hash] : cursor)
 		{
 			HOTSTUFF_INFO("LOADING: block hash %s", utils::array_to_str(hash).c_str());
-			block_ptr_t blk = HotstuffBlock::load_decided_block(hash, config.get_info(self_id));
+			block_ptr_t blk = HotstuffBlock::load_decided_block(hash, config->get_info(self_id));
 			auto res = block_store.insert_block(blk);
 			if (res) {
 				throw std::runtime_error("unable to properly load data into block store");

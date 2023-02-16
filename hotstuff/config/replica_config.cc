@@ -80,7 +80,9 @@ const ReplicaInfo&
 ReplicaConfig::get_info(ReplicaID rid) const {
     auto it = replica_map.find(rid);
     if (it == replica_map.end())
+    {
         throw std::runtime_error(std::string("rid") + std::to_string(rid) + "not found");
+    }
     return *(it->second);
 }
 

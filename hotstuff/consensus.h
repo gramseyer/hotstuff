@@ -44,8 +44,8 @@ private:
 protected:
     /* === auxilliary variables === */
     ReplicaID self_id;           							/**< replica id of self in ReplicaConfig */
-    ReplicaConfig config;	                 				/**< replica configuration */
-    block_ptr_t b_leaf;										/**< highest tail block.  Build on this block */
+    std::shared_ptr<ReplicaConfig> config;	              				/**< replica configuration */
+    block_ptr_t b_leaf;									/**< highest tail block.  Build on this block */
 
 	mutable std::mutex proposal_mutex; 						/**< lock access to b_leaf and hqc */
 
@@ -67,10 +67,10 @@ private:
 
 public:
 
-	HotstuffCore(ReplicaConfig&& config, ReplicaID self_id);
+	HotstuffCore(std::shared_ptr<ReplicaConfig> config, ReplicaID self_id);
 
 	const ReplicaConfig& get_config() override final {
-		return config;
+		return *config;
 	}
 
 	void 

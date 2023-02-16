@@ -61,7 +61,7 @@ protected:
 
 public:
 
-	HotstuffAppBase(ReplicaConfig&& config_, ReplicaID self_id, SecretKey sk, HotstuffConfigs const& configs);
+	HotstuffAppBase(std::shared_ptr<ReplicaConfig> config_, ReplicaID self_id, SecretKey sk, HotstuffConfigs const& configs);
 
 	//! Propose new block.
 	//! Block hash returned (for input to wait_for_new_qc)
@@ -105,8 +105,8 @@ class HotstuffApp : public HotstuffAppBase {
 
 public:
 
-	HotstuffApp(ReplicaConfig&& config, ReplicaID self_id, SecretKey sk, std::shared_ptr<VMBase> vm, HotstuffConfigs const& _configs)
-		: HotstuffAppBase(std::move(config), self_id, sk, _configs)
+	HotstuffApp(std::shared_ptr<ReplicaConfig> config, ReplicaID self_id, SecretKey sk, std::shared_ptr<VMBase> vm, HotstuffConfigs const& _configs)
+		: HotstuffAppBase(config, self_id, sk, _configs)
 		, vm_bridge(vm, configs)
 		{}
 
@@ -162,8 +162,8 @@ class NonspeculativeHotstuffApp : public HotstuffAppBase {
 
 public:
 
-	NonspeculativeHotstuffApp(ReplicaConfig&& config, ReplicaID self_id, SecretKey sk, std::shared_ptr<VMBase> vm, HotstuffConfigs const& _configs)
-		: HotstuffAppBase(std::move(config), self_id, sk, _configs)
+	NonspeculativeHotstuffApp(std::shared_ptr<ReplicaConfig> config, ReplicaID self_id, SecretKey sk, std::shared_ptr<VMBase> vm, HotstuffConfigs const& _configs)
+		: HotstuffAppBase(config, self_id, sk, _configs)
 		, vm_bridge(vm)
 		{}
 

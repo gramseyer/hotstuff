@@ -25,6 +25,8 @@
 
 #include <unordered_map>
 
+#include <utils/non_movable.h>
+
 namespace hotstuff
 {
 
@@ -64,7 +66,7 @@ public:
     virtual ~ReplicaInfo() = default;
 };
 
-class ReplicaConfig
+class ReplicaConfig : public utils::NonMovableOrCopyable
 {
 
     std::unordered_map<ReplicaID, std::unique_ptr<ReplicaInfo>> replica_map;

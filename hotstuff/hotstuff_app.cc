@@ -9,15 +9,15 @@ namespace hotstuff
 {
 
 std::unique_ptr<Hotstuff>
-make_speculative_hotstuff_instance(ReplicaConfig&& config, ReplicaID self_id, SecretKey sk, std::shared_ptr<VMBase> vm, HotstuffConfigs const& configs)
+make_speculative_hotstuff_instance(std::shared_ptr<ReplicaConfig> config, ReplicaID self_id, SecretKey sk, std::shared_ptr<VMBase> vm, HotstuffConfigs const& configs)
 {
-	return std::make_unique<HotstuffApp>(std::move(config), self_id, sk, vm, configs);
+	return std::make_unique<HotstuffApp>(config, self_id, sk, vm, configs);
 }
 
 std::unique_ptr<Hotstuff>
-make_nonspeculative_hotstuff_instance(ReplicaConfig&& config, ReplicaID self_id, SecretKey sk, std::shared_ptr<VMBase> vm, HotstuffConfigs const& configs)
+make_nonspeculative_hotstuff_instance(std::shared_ptr<ReplicaConfig> config, ReplicaID self_id, SecretKey sk, std::shared_ptr<VMBase> vm, HotstuffConfigs const& configs)
 {
-	return std::make_unique<NonspeculativeHotstuffApp>(std::move(config), self_id, sk, vm, configs);
+	return std::make_unique<NonspeculativeHotstuffApp>(config, self_id, sk, vm, configs);
 }
 
 } /* hotstuff */
