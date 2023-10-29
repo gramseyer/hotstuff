@@ -2,7 +2,7 @@
 
 #include "hotstuff/hotstuff_debug_macros.h"
 #include "hotstuff/crypto/hash.h"
-#include "utils/save_load_xdr.h"
+#include "utils/hs_save_load_xdr.h"
 
 #include "hotstuff/manage_data_dirs.h"
 

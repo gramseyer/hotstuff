@@ -1,6 +1,6 @@
 #include "hotstuff/manage_data_dirs.h"
 
-#include "utils/save_load_xdr.h"
+#include "utils/hs_save_load_xdr.h"
 
 #include <utils/mkdir.h>
 

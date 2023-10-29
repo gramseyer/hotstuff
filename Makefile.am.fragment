@@ -1,0 +1,46 @@
+
+hotstuff_CFLAGS = -I %reldir%/include
+
+hotstuff_CCS = \
+	%reldir%/hotstuff/block.cc \
+	%reldir%/hotstuff/block_storage/io_utils.cc \
+	%reldir%/hotstuff/block_storage/block_fetch_server.cc \
+	%reldir%/hotstuff/block_storage/block_fetch_manager.cc \
+	%reldir%/hotstuff/block_storage/block_fetch_worker.cc \
+	%reldir%/hotstuff/block_storage/block_store.cc \
+	%reldir%/hotstuff/block_storage/garbage_collector.cc \
+	%reldir%/hotstuff/config/replica_config.cc \
+	%reldir%/hotstuff/consensus.cc \
+	%reldir%/hotstuff/crypto/crypto_utils.cc \
+	%reldir%/hotstuff/crypto/certs.cc \
+	%reldir%/hotstuff/event.cc \
+	%reldir%/hotstuff/event_queue.cc \
+	%reldir%/hotstuff/hotstuff.cc \
+	%reldir%/hotstuff/hotstuff_app.cc \
+	%reldir%/hotstuff/log_access_wrapper.cc \
+	%reldir%/hotstuff/lmdb.cc \
+	%reldir%/hotstuff/manage_data_dirs.cc \
+	%reldir%/hotstuff/network_event.cc \
+	%reldir%/hotstuff/network_event_queue.cc \
+	%reldir%/hotstuff/protocol/hotstuff_protocol_client.cc \
+	%reldir%/hotstuff/protocol/hotstuff_protocol_manager.cc \
+	%reldir%/hotstuff/protocol/hotstuff_server.cc \
+	%reldir%/hotstuff/vm/hotstuff_vm_bridge.cc \
+	%reldir%/hotstuff/vm/nonspeculative_vm_bridge.cc \
+	%reldir%/hotstuff/vm/vm_control_interface.cc
+
+$(hotstuff_CCS:.cc=.o): CXXFLAGS += -I %reldir%/
+
+hotstuff_EXAMPLES_SRCS = \
+	%reldir%/examples/vm/counting_vm.cc 
+
+hotstuff_TEST_SRCS = \
+	%reldir%/hotstuff/vm/tests/test_speculative_exec_gadget.cc \
+	%reldir%/hotstuff/vm/tests/test_counting_vm.cc \
+	%reldir%/test_utils/keygen.cc
+
+hotstuff_X_FILES = \
+	%reldir%/include/hotstuff/xdr/types.x \
+	%reldir%/hotstuff/xdr/hotstuff.x
+
+
